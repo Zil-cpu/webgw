@@ -83,6 +83,10 @@ cursor:pointer;
 <button type="button" onclick="logout()" style="background:red;">Logout</button>
 </form>
 
+<button type="button" onclick="downloadExcel()" style="background:blue;">
+Download Excel
+</button>
+
 <table>
 <thead>
 <tr>
@@ -147,6 +151,22 @@ function hapus(i){
 data.splice(i,1);
 localStorage.setItem("service",JSON.stringify(data));
 tampil();
+function downloadExcel(){
+let csv = "Tanggal,Barang,Customer,Status\n";
+
+data.forEach(d=>{
+csv += `${d.tanggal},${d.nama},${d.customer},${d.status}\n`;
+});
+
+let blob = new Blob([csv], { type: 'text/csv' });
+let url = window.URL.createObjectURL(blob);
+
+let a = document.createElement("a");
+a.href = url;
+a.download = "data_service.csv";
+a.click();
+}
+
 }
 
 tampil();

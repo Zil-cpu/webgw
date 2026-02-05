@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Data Barang Service</title>
+<title>Service Barang</title>
 
 <style>
 body{
@@ -12,18 +12,18 @@ background:#0f172a;
 color:white;
 padding:20px;
 }
-h1{
-text-align:center;
-}
-form{
+h1{text-align:center}
+.box{
+max-width:400px;
+margin:auto;
 background:#111827;
 padding:20px;
-border-radius:10px;
-margin-bottom:20px;
+border-radius:12px;
 }
 input,select,button{
 padding:10px;
 margin:5px;
+width:90%;
 border-radius:8px;
 border:none;
 }
@@ -36,6 +36,7 @@ table{
 width:100%;
 border-collapse:collapse;
 background:#111827;
+margin-top:20px;
 }
 th,td{
 padding:10px;
@@ -46,15 +47,25 @@ text-align:center;
 background:red;
 color:white;
 padding:5px 10px;
-cursor:pointer;
 border:none;
 border-radius:5px;
+cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
+<div id="login">
+<div class="box">
+<h2>🔐 Login Admin</h2>
+<input type="text" id="user" placeholder="Username">
+<input type="password" id="pass" placeholder="Password">
+<button onclick="login()">Login</button>
+</div>
+</div>
+
+<div id="app" style="display:none;">
 <h1>📦 DATA BARANG SERVICE</h1>
 
 <form onsubmit="tambahData(); return false;">
@@ -67,7 +78,9 @@ border-radius:5px;
 <option value="Keluar">Barang Keluar</option>
 </select>
 
+<br>
 <button type="submit">Simpan</button>
+<button type="button" onclick="logout()" style="background:red;">Logout</button>
 </form>
 
 <table>
@@ -80,12 +93,28 @@ border-radius:5px;
 <th>Hapus</th>
 </tr>
 </thead>
-
 <tbody id="tabel"></tbody>
 </table>
+</div>
 
 <script>
 let data = JSON.parse(localStorage.getItem("service")) || [];
+
+function login(){
+let u=document.getElementById("user").value;
+let p=document.getElementById("pass").value;
+
+if(u==="admin" && p==="12345"){
+document.getElementById("login").style.display="none";
+document.getElementById("app").style.display="block";
+}else{
+alert("Login salah bro!");
+}
+}
+
+function logout(){
+location.reload();
+}
 
 function tampil(){
 let isi="";
@@ -125,40 +154,7 @@ tampil();
 
 </body>
 </html>
-Klik:
 
-Commit changes
-🌐 BUKA WEBSITE LU
-https://zil-cpu.github.io/webgw
-Sekarang web lu jadi:
-
-WEB INPUT DATA BARANG SERVICE
-
-Bisa:
-
-isi barang masuk
-
-isi barang keluar
-
-data tersimpan otomatis
-
-🔥 MAU NAIK LEVEL LAGI?
-Gue bisa upgrade jadi:
-
-Login admin + password
-
-Bisa download Excel
-
-Bisa print laporan
-
-Database online (bukan local)
-
-Multi user (dipakai toko)
-
-Balas angka bro 😎
-Gue gas bikin versi usaha beneran.
-
-Is this conversation helpful so far?
 
 
 

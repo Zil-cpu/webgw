@@ -134,6 +134,9 @@ box-shadow:0 0 25px black;
 <input type="text" id="nama" placeholder="Nama Barang" required>
 <input type="text" id="customer" placeholder="Customer" required>
 
+<input type="file" id="foto" accept="image/*">
+
+
 <select id="status">
 <option value="Masuk">Barang Masuk</option>
 <option value="Keluar">Barang Keluar</option>
@@ -156,7 +159,9 @@ box-shadow:0 0 25px black;
 <th>Barang</th>
 <th>Customer</th>
 <th>Status</th>
+<th>Foto</th>
 <th>Hapus</th>
+
 </tr>
 </thead>
 <tbody id="tabel"></tbody>
@@ -191,13 +196,49 @@ isi+=`<tr>
 <td>${d.nama}</td>
 <td>${d.customer}</td>
 <td>${d.status}</td>
-<td><button class="hapus" onclick="hapus(${i})">X</button></td>
+<td>${d.foto ? `<img src="${d.foto}" width="60">` : "-"}</td>
+<td><button class="hapus"onclick="hapus(${i})">X</button></td>
 </tr>`;
 });
 document.getElementById("tabel").innerHTML=isi;
 }
 
 function tambahData(){
+let file = document.getElementById("foto").files[0];
+let reader = new FileReader();
+
+reader.onload = function(){
+let d={
+tanggal:document.getElementById("tanggal").value,
+nama:document.getElementById("nama").value,
+customer:document.getElementById("customer").value,
+status:document.getElementById("status").value,
+foto:reader.result
+};
+
+data.push(d);
+localStorage.setItem("service",JSON.stringify(data));
+tampil();
+document.querySelector("form").reset();
+}
+
+if(file){
+reader.readAsDataURL(file);
+}else{
+let d={
+tanggal:document.getElementById("tanggal").value,
+nama:document.getElementById("nama").value,
+customer:document.getElementById("customer").value,
+status:document.getElementById("status").value,
+foto:""
+};
+data.push(d);
+localStorage.setItem("service",JSON.stringify(data));
+tampil();
+document.querySelector("form").reset();
+}
+}
+
 let d={
 tanggal:document.getElementById("tanggal").value,
 nama:document.getElementById("nama").value,

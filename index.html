@@ -1,11 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-<title>Website Gw</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Barang Service</title>
+
+<style>
+body{
+font-family:Arial;
+background:#0f172a;
+color:white;
+padding:20px;
+}
+h1{
+text-align:center;
+}
+form{
+background:#111827;
+padding:20px;
+border-radius:10px;
+margin-bottom:20px;
+}
+input,select,button{
+padding:10px;
+margin:5px;
+border-radius:8px;
+border:none;
+}
+button{
+background:#22c55e;
+color:white;
+cursor:pointer;
+}
+table{
+width:100%;
+border-collapse:collapse;
+background:#111827;
+}
+th,td{
+padding:10px;
+border:1px solid #333;
+text-align:center;
+}
+.hapus{
+background:red;
+color:white;
+padding:5px 10px;
+cursor:pointer;
+border:none;
+border-radius:5px;
+}
+</style>
 </head>
 
-<body style="background:black;color:white;text-align:center;">
-<h1>🔥 WEBSITE GW ONLINE 🔥</h1>
-<p>Kalau ini muncul berarti berhasil bro</p>
+<body>
+
+<h1>📦 DATA BARANG SERVICE</h1>
+
+<form onsubmit="tambahData(); return false;">
+<input type="text" id="tanggal" placeholder="Tanggal" required>
+<input type="text" id="nama" placeholder="Nama Barang" required>
+<input type="text" id="customer" placeholder="Customer" required>
+
+<select id="status">
+<option value="Masuk">Barang Masuk</option>
+<option value="Keluar">Barang Keluar</option>
+</select>
+
+<button type="submit">Simpan</button>
+</form>
+
+<table>
+<thead>
+<tr>
+<th>Tanggal</th>
+<th>Barang</th>
+<th>Customer</th>
+<th>Status</th>
+<th>Hapus</th>
+</tr>
+</thead>
+
+<tbody id="tabel"></tbody>
+</table>
+
+<script>
+let data = JSON.parse(localStorage.getItem("service")) || [];
+
+function tampil(){
+let isi="";
+data.forEach((d,i)=>{
+isi+=`<tr>
+<td>${d.tanggal}</td>
+<td>${d.nama}</td>
+<td>${d.customer}</td>
+<td>${d.status}</td>
+<td><button class="hapus" onclick="hapus(${i})">X</button></td>
+</tr>`;
+});
+document.getElementById("tabel").innerHTML=isi;
+}
+
+function tambahData(){
+let d={
+tanggal:document.getElementById("tanggal").value,
+nama:document.getElementById("nama").value,
+customer:document.getElementById("customer").value,
+status:document.getElementById("status").value
+};
+data.push(d);
+localStorage.setItem("service",JSON.stringify(data));
+tampil();
+document.querySelector("form").reset();
+}
+
+function hapus(i){
+data.splice(i,1);
+localStorage.setItem("service",JSON.stringify(data));
+tampil();
+}
+
+tampil();
+</script>
+
 </body>
 </html>
+Klik:
+
+Commit changes
+🌐 BUKA WEBSITE LU
+https://zil-cpu.github.io/webgw
+Sekarang web lu jadi:
+
+WEB INPUT DATA BARANG SERVICE
+
+Bisa:
+
+isi barang masuk
+
+isi barang keluar
+
+data tersimpan otomatis
+
+🔥 MAU NAIK LEVEL LAGI?
+Gue bisa upgrade jadi:
+
+Login admin + password
+
+Bisa download Excel
+
+Bisa print laporan
+
+Database online (bukan local)
+
+Multi user (dipakai toko)
+
+Balas angka bro 😎
+Gue gas bikin versi usaha beneran.
+
+Is this conversation helpful so far?
+
+
+
+
+

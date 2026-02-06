@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+<script src="https://unpkg.com/html5-qrcode"></script>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -105,6 +106,9 @@ Sains Quality Service Center
 
 <input id="nama" placeholder="Nama Barang">
 <input id="sn" placeholder="Serial Number">
+<button onclick="startScan()">SCAN BARCODE</button>
+<div id="reader" style="width:250px;margin:auto;"></div>
+
 <select id="status">
 <option>Masuk</option>
 <option>Selesai</option>
@@ -263,6 +267,24 @@ _____________
 `);
 
 win.print();
+}
+
+function startScan(){
+document.getElementById("reader").innerHTML="";
+
+let scanner = new Html5Qrcode("reader");
+
+scanner.start(
+{ facingMode: "environment" },
+{ fps: 10, qrbox: 250 },
+(qrCodeMessage)=>{
+document.getElementById("sn").value = qrCodeMessage;
+scanner.stop();
+document.getElementById("reader").innerHTML="";
+document.getElementById("beep").play();
+},
+(errorMessage)=>{}
+);
 }
 
 </script>

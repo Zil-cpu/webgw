@@ -3,53 +3,99 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Service Barang</title>
+<title>Service Center App</title>
 
 <style>
 body{
-font-family:Arial;
-background:#0f172a;
+font-family:Arial, sans-serif;
+background:linear-gradient(135deg,#020617,#0f172a);
 color:white;
-padding:20px;
+margin:0;
 }
-h1{text-align:center}
-.box{
-max-width:400px;
+
+header{
+background:#020617;
+padding:15px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+box-shadow:0 0 10px black;
+}
+
+.container{
+padding:20px;
+max-width:1100px;
 margin:auto;
+}
+
+.card{
 background:#111827;
 padding:20px;
-border-radius:12px;
+border-radius:15px;
+box-shadow:0 0 20px rgba(0,0,0,0.5);
+margin-bottom:20px;
 }
-input,select,button{
-padding:10px;
-margin:5px;
-width:90%;
+
+input,select{
+padding:12px;
+margin:6px;
 border-radius:8px;
 border:none;
-}
-button{
-background:#22c55e;
+background:#020617;
 color:white;
-cursor:pointer;
 }
+
+button{
+padding:12px 20px;
+margin:6px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.save{background:#22c55e;}
+.logout{background:#ef4444;}
+.excel{background:#3b82f6;}
+.print{background:#f59e0b;}
+
 table{
 width:100%;
 border-collapse:collapse;
-background:#111827;
-margin-top:20px;
+margin-top:15px;
 }
+
 th,td{
-padding:10px;
-border:1px solid #333;
+padding:12px;
+border-bottom:1px solid #333;
 text-align:center;
 }
+
+th{
+background:#020617;
+}
+
+tr:hover{
+background:#020617;
+}
+
 .hapus{
 background:red;
-color:white;
 padding:5px 10px;
 border:none;
-border-radius:5px;
+border-radius:6px;
+color:white;
 cursor:pointer;
+}
+
+.loginbox{
+max-width:350px;
+margin:120px auto;
+background:#111827;
+padding:30px;
+border-radius:15px;
+text-align:center;
+box-shadow:0 0 25px black;
 }
 </style>
 </head>
@@ -57,19 +103,24 @@ cursor:pointer;
 <body>
 
 <div id="login">
-<div class="box">
-<h2>🔐 Login Admin</h2>
-<input type="text" id="user" placeholder="Username">
-<input type="password" id="pass" placeholder="Password">
-<button onclick="login()">Login</button>
+<div class="loginbox">
+<h2>🔐 LOGIN ADMIN</h2>
+<input type="text" id="user" placeholder="Username"><br>
+<input type="password" id="pass" placeholder="Password"><br>
+<button class="save" onclick="login()">LOGIN</button>
 </div>
 </div>
 
 <div id="app" style="display:none;">
-<h1>📦 DATA BARANG SERVICE</h1>
+<header>🔥 SERVICE CENTER APP</header>
+
+<div class="container">
+
+<div class="card">
+<h3>Input Barang Service</h3>
 
 <form onsubmit="tambahData(); return false;">
-<input type="text" id="tanggal" placeholder="Tanggal" required>
+<input type="date" id="tanggal" required>
 <input type="text" id="nama" placeholder="Nama Barang" required>
 <input type="text" id="customer" placeholder="Customer" required>
 
@@ -79,14 +130,15 @@ cursor:pointer;
 </select>
 
 <br>
-<button type="submit">Simpan</button>
-<button type="button" onclick="logout()" style="background:red;">Logout</button>
-<button type="button" onclick="downloadExcel()" style="background:blue;">
-Download Excel</button>
-<button type="button" onclick="printData()" style="background:orange;">
-Print Laporan</button>
+<button class="save">Simpan</button>
+<button type="button" class="logout" onclick="logout()">Logout</button>
+<button type="button" class="excel" onclick="downloadExcel()">Excel</button>
+<button type="button" class="print" onclick="printData()">Print</button>
 </form>
+</div>
 
+<div class="card">
+<h3>Data Service</h3>
 <table>
 <thead>
 <tr>
@@ -101,6 +153,9 @@ Print Laporan</button>
 </table>
 </div>
 
+</div>
+</div>
+
 <script>
 let data = JSON.parse(localStorage.getItem("service")) || [];
 
@@ -112,13 +167,11 @@ if(u==="admin" && p==="12345"){
 document.getElementById("login").style.display="none";
 document.getElementById("app").style.display="block";
 }else{
-alert("Login salah bro!");
+alert("Login salah!");
 }
 }
 
-function logout(){
-location.reload();
-}
+function logout(){location.reload();}
 
 function tampil(){
 let isi="";
@@ -153,55 +206,41 @@ localStorage.setItem("service",JSON.stringify(data));
 tampil();
 }
 
-tampil();
-function printData(){
-let isi = `
-<h2>DATA SERVICE BARANG</h2>
-<table border="1" style="border-collapse:collapse;width:100%;">
-<tr>
-<th>Tanggal</th>
-<th>Barang</th>
-<th>Customer</th>
-<th>Status</th>
-</tr>
-`;
-
+function downloadExcel(){
+let csv="Tanggal,Barang,Customer,Status\n";
 data.forEach(d=>{
-isi += `<tr>
+csv+=`${d.tanggal},${d.nama},${d.customer},${d.status}\n`;
+});
+let blob=new Blob([csv],{type:'text/csv'});
+let url=window.URL.createObjectURL(blob);
+let a=document.createElement("a");
+a.href=url;
+a.download="data_service.csv";
+a.click();
+}
+
+function printData(){
+let isi="<h2>DATA SERVICE</h2><table border='1' style='width:100%;border-collapse:collapse'><tr><th>Tanggal</th><th>Barang</th><th>Customer</th><th>Status</th></tr>";
+data.forEach(d=>{
+isi+=`<tr>
 <td>${d.tanggal}</td>
 <td>${d.nama}</td>
 <td>${d.customer}</td>
 <td>${d.status}</td>
 </tr>`;
 });
-
-isi += "</table>";
-
-let win = window.open("", "", "width=900,height=700");
+isi+="</table>";
+let win=window.open("");
 win.document.write(isi);
 win.print();
 }
 
-function downloadExcel(){
-let csv = "Tanggal,Barang,Customer,Status\n";
-
-data.forEach(d=>{
-csv += `${d.tanggal},${d.nama},${d.customer},${d.status}\n`;
-});
-
-let blob = new Blob([csv], { type: 'text/csv' });
-let url = window.URL.createObjectURL(blob);
-
-let a = document.createElement("a");
-a.href = url;
-a.download = "data_service.csv";
-a.click();
-}
-
+tampil();
 </script>
 
 </body>
 </html>
+
 
 
 

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
-<script src="https://unpkg.com/html5-qrcode"></script>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sains Quality Computer</title>
 
 <link rel="icon" href="logo.png">
+<script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
 body{
@@ -53,10 +53,6 @@ color:white;
 font-weight:bold;
 }
 
-button:hover{
-background:#0056b3;
-}
-
 table{
 width:100%;
 margin-top:15px;
@@ -66,6 +62,7 @@ border-collapse:collapse;
 th,td{
 border:1px solid #ccc;
 padding:8px;
+font-size:13px;
 }
 
 th{
@@ -81,12 +78,12 @@ margin-top:10px;
 .loginbox{
 margin-top:100px;
 }
-
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
 <div id="loginPage" class="loginbox">
 <img src="logo.png" class="logo">
 <h2>Sains Quality Computer</h2>
@@ -95,6 +92,7 @@ margin-top:100px;
 <button onclick="login()">LOGIN</button>
 </div>
 
+<!-- APP -->
 <div id="app" style="display:none;">
 <div class="header">
 Sains Quality Service Center
@@ -106,6 +104,7 @@ Sains Quality Service Center
 
 <input id="nama" placeholder="Nama Barang">
 <input id="sn" placeholder="Serial Number">
+
 <button onclick="startScan()">SCAN BARCODE</button>
 <div id="reader" style="width:250px;margin:auto;"></div>
 
@@ -118,10 +117,9 @@ Sains Quality Service Center
 <br>
 <button onclick="tambah()">SIMPAN</button>
 <button onclick="download()">DOWNLOAD EXCEL</button>
-<button onclick="backup()">BACKUP DATA</button>
-<button onclick="restore()">RESTORE DATA</button>
-<button onclick="printStruk()">PRINT STRUK TOKO</button>
-<button onclick="printPDF()">PRINT PDF</button>
+<button onclick="printStruk()">PRINT STRUK</button>
+<button onclick="backup()">BACKUP</button>
+<button onclick="restore()">RESTORE</button>
 
 <table id="tabel">
 <tr>
@@ -129,43 +127,23 @@ Sains Quality Service Center
 <th>Barang</th>
 <th>SN</th>
 <th>Status</th>
-<th>Hapus</th>
+<th>Aksi</th>
 </tr>
 </table>
 
-function backup(){
-let data = localStorage.getItem("tabel");
-let blob = new Blob([data]);
-let a = document.createElement("a");
-a.href = URL.createObjectURL(blob);
-a.download = "backup_toko.txt";
-a.click();
-}
-
-function restore(){
-let data = prompt("Paste data backup disini:");
-if(data){
-localStorage.setItem("tabel",data);
-location.reload();
-}
-}
-
 </div>
 </div>
-
-
-
 
 <audio id="beep">
 <source src="https://www.soundjay.com/misc/sounds/barcode-beep.mp3">
 </audio>
 
-
 <script>
 
+// LOGIN
 function login(){
 let p=document.getElementById("pass").value;
-if(p==="Elmijimo123"){
+if(p==="12345"){
 document.getElementById("loginPage").style.display="none";
 document.getElementById("app").style.display="block";
 }else{
@@ -173,12 +151,14 @@ alert("Password salah");
 }
 }
 
+// JAM REALTIME
 function jam(){
 let t=new Date();
 document.getElementById("jam").innerHTML=t.toLocaleString();
 }
 setInterval(jam,1000);
 
+// TAMBAH DATA
 function tambah(){
 let nama=document.getElementById("nama").value;
 let sn=document.getElementById("sn").value;
@@ -193,15 +173,18 @@ row.insertCell(0).innerHTML=waktu;
 row.insertCell(1).innerHTML=nama;
 row.insertCell(2).innerHTML=sn;
 row.insertCell(3).innerHTML=status;
-let btn = row.insertCell(4);
-btn.innerHTML = "<button onclick='hapus(this)'>Hapus</button>";
 
+let aksi=row.insertCell(4);
+aksi.innerHTML=`
+<button onclick='editRow(this)'>Edit</button>
+<button onclick='hapus(this)'>Hapus</button>
+`;
 
 document.getElementById("beep").play();
-
 saveData();
 }
 
+// SAVE
 function saveData(){
 localStorage.setItem("tabel",document.getElementById("tabel").innerHTML);
 }
@@ -212,6 +195,37 @@ document.getElementById("tabel").innerHTML=localStorage.getItem("tabel");
 }
 }
 
+// HAPUS PASSWORD ADMIN
+function hapus(btn){
+let pass = prompt("Password hapus:");
+if(pass!=="admin123"){
+alert("Password salah");
+return;
+}
+if(confirm("Hapus data?")){
+let row = btn.parentNode.parentNode;
+row.remove();
+saveData();
+}
+}
+
+// EDIT
+function editRow(btn){
+let row = btn.parentNode.parentNode;
+
+let nama = prompt("Edit nama", row.cells[1].innerHTML);
+let sn = prompt("Edit SN", row.cells[2].innerHTML);
+let status = prompt("Edit status", row.cells[3].innerHTML);
+
+if(nama){
+row.cells[1].innerHTML=nama;
+row.cells[2].innerHTML=sn;
+row.cells[3].innerHTML=status;
+saveData();
+}
+}
+
+// DOWNLOAD EXCEL
 function download(){
 let table=document.getElementById("tabel").outerHTML;
 let url='data:application/vnd.ms-excel,'+ encodeURIComponent(table);
@@ -221,108 +235,57 @@ link.download="data_service.xls";
 link.click();
 }
 
-function printPDF(){
-let isi = document.getElementById("tabel").outerHTML;
-let win = window.open("");
-win.document.write("<h2>Sains Quality Service Center</h2>");
+// PRINT STRUK
+function printStruk(){
+let isi=document.getElementById("tabel").outerHTML;
+let win=window.open("");
+win.document.write("<h3>Sains Quality Service Center</h3>");
 win.document.write(isi);
 win.print();
 }
 
-function printStruk(){
-
-let table = document.getElementById("tabel");
-let rows = table.rows;
-
-let isi = "";
-
-for(let i=1;i<rows.length;i++){
-let col = rows[i].cells;
-isi += `
-<tr>
-<td>${col[0].innerHTML}</td>
-<td>${col[1].innerHTML}</td>
-<td>${col[2].innerHTML}</td>
-<td>${col[3].innerHTML}</td>
-</tr>
-`;
+// BACKUP
+function backup(){
+let data=localStorage.getItem("tabel");
+let blob=new Blob([data]);
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="backup_toko.txt";
+a.click();
 }
 
-let win = window.open("","","width=400,height=600");
-
-win.document.write(`
-<html>
-<head>
-<title>Print</title>
-<style>
-body{font-family:monospace;text-align:center;}
-table{width:100%;border-collapse:collapse;}
-td{border-bottom:1px dashed #000;padding:4px;font-size:12px;}
-h2{margin:5px;}
-</style>
-</head>
-<body>
-
-<h2>Sains Quality</h2>
-<b>Service Center</b>
-<hr>
-${new Date().toLocaleString()}
-<hr>
-
-<table>
-<tr>
-<td>Waktu</td>
-<td>Barang</td>
-<td>SN</td>
-<td>Status</td>
-</tr>
-${isi}
-</table>
-
-<hr>
-Terima kasih 🙏<br>
-Barang harap diambil tepat waktu
-<br><br>
-TTD Customer
-<br><br><br>
-_____________
-
-</body>
-</html>
-`);
-
-win.print();
+// RESTORE
+function restore(){
+let data=prompt("Paste backup:");
+if(data){
+localStorage.setItem("tabel",data);
+location.reload();
+}
 }
 
+// SCAN BARCODE
 function startScan(){
 document.getElementById("reader").innerHTML="";
-
 let scanner = new Html5Qrcode("reader");
 
 scanner.start(
 { facingMode: "environment" },
 { fps: 10, qrbox: 250 },
-(qrCodeMessage)=>{
-document.getElementById("sn").value = qrCodeMessage;
+(qr)=>{
+document.getElementById("sn").value=qr;
+document.getElementById("beep").play();
 scanner.stop();
 document.getElementById("reader").innerHTML="";
-document.getElementById("beep").play();
 },
-(errorMessage)=>{}
+(err)=>{}
 );
-}
-
-function hapus(btn){
-if(confirm("Hapus data ini?")){
-let row = btn.parentNode.parentNode;
-row.remove();
-saveData();
-}
 }
 
 </script>
 </body>
 </html>
+
+
 
 
 

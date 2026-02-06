@@ -81,6 +81,9 @@ cursor:pointer;
 <br>
 <button type="submit">Simpan</button>
 <button type="button" onclick="logout()" style="background:red;">Logout</button>
+<button type="button" onclick="downloadExcel()" style="background:blue;">
+Download Excel
+</button>
 </form>
 
 <table>
@@ -150,6 +153,22 @@ tampil();
 }
 
 tampil();
+function downloadExcel(){
+let csv = "Tanggal,Barang,Customer,Status\n";
+
+data.forEach(d=>{
+csv += `${d.tanggal},${d.nama},${d.customer},${d.status}\n`;
+});
+
+let blob = new Blob([csv], { type: 'text/csv' });
+let url = window.URL.createObjectURL(blob);
+
+let a = document.createElement("a");
+a.href = url;
+a.download = "data_service.csv";
+a.click();
+}
+
 </script>
 
 </body>

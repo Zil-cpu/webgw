@@ -167,19 +167,19 @@ let status = document.getElementById("status").value;
 let fileInput = document.getElementById("foto");
 let file = fileInput.files[0];
 
-if(nama==""){
+if(nama.trim()==""){
 alert("Isi nama barang dulu bro");
 return;
 }
 
 let waktu = new Date().toLocaleString();
 
-// kalau ada foto
+// kalau ADA FOTO
 if(file){
 let reader = new FileReader();
 
-reader.onload = function(e){
-let foto = e.target.result;
+reader.onloadend = function(){
+let foto = reader.result;
 
 data.push({
 waktu:waktu,
@@ -192,13 +192,18 @@ status:status
 localStorage.setItem("dataService", JSON.stringify(data));
 render();
 document.getElementById("beep").play();
+
+// reset input
+document.getElementById("nama").value="";
+document.getElementById("sn").value="";
 fileInput.value="";
 }
 
 reader.readAsDataURL(file);
 
+// kalau TIDAK ADA FOTO
 }else{
-// kalau tanpa foto
+
 data.push({
 waktu:waktu,
 foto:"",
@@ -210,8 +215,13 @@ status:status
 localStorage.setItem("dataService", JSON.stringify(data));
 render();
 document.getElementById("beep").play();
+
+// reset
+document.getElementById("nama").value="";
+document.getElementById("sn").value="";
 }
 }
+
 
 
 // SAVE

@@ -203,6 +203,11 @@ alert("Password salah!");
 return;
 }
 
+data.splice(index,1);
+localStorage.setItem("dataBarang", JSON.stringify(data));
+renderTable();
+}
+
 if(confirm("Hapus data?")){
 let row = btn.parentNode.parentNode;
 row.remove();

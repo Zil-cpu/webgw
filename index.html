@@ -123,6 +123,16 @@ Sains Quality Service Center
 <button onclick="printStruk()">PRINT STRUK TOKO</button>
 <button onclick="printPDF()">PRINT PDF</button>
 
+<table id="tabel">
+<tr>
+<th>Waktu</th>
+<th>Barang</th>
+<th>SN</th>
+<th>Status</th>
+<th>Hapus</th>
+</tr>
+</table>
+
 function backup(){
 let data = localStorage.getItem("tabel");
 let blob = new Blob([data]);
@@ -140,19 +150,11 @@ location.reload();
 }
 }
 
-
-<table id="tabel">
-<tr>
-<th>Waktu</th>
-<th>Barang</th>
-<th>SN</th>
-<th>Status</th>
-<th>Hapus</th>
-</tr>
-</table>
-
 </div>
 </div>
+
+
+
 
 <audio id="beep">
 <source src="https://www.soundjay.com/misc/sounds/barcode-beep.mp3">

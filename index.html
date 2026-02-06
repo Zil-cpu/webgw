@@ -1,295 +1,133 @@
 <!DOCTYPE html>
+
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sains Quality Computer</title>
-
-<link rel="icon" href="logo.png">
-<script src="https://unpkg.com/html5-qrcode"></script>
+<title>Sains Quality Service Center</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body{
-font-family:Arial;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-margin:0;
-color:white;
-text-align:center;
+    font-family: Arial;
+    background:#0f172a;
+    color:white;
+    text-align:center;
 }
-
-.header{
-background:black;
-padding:15px;
-font-size:22px;
-font-weight:bold;
+.login-box{
+    margin-top:100px;
 }
-
-.jam{
-font-size:18px;
-margin-top:5px;
-color:#00ffcc;
+input,button{
+    padding:10px;
+    margin:5px;
+    border-radius:8px;
+    border:none;
 }
-
-.container{
-background:white;
-color:black;
-margin:20px;
-padding:20px;
-border-radius:15px;
-box-shadow:0 0 20px rgba(0,0,0,0.4);
-}
-
-input,select,button{
-padding:10px;
-margin:5px;
-width:90%;
-border-radius:8px;
-border:1px solid #ccc;
-}
-
 button{
-background:#007bff;
-color:white;
-font-weight:bold;
+    background:#22c55e;
+    color:white;
+    font-weight:bold;
 }
-
 table{
-width:100%;
-margin-top:15px;
-border-collapse:collapse;
+    width:95%;
+    margin:auto;
+    margin-top:20px;
+    border-collapse:collapse;
 }
-
-th,td{
-border:1px solid #ccc;
-padding:8px;
-font-size:13px;
-}
-
-th{
-background:#007bff;
-color:white;
-}
-
-.logo{
-width:80px;
-margin-top:10px;
-}
-
-.loginbox{
-margin-top:100px;
+td,th{
+    border:1px solid #555;
+    padding:8px;
 }
 </style>
+
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="loginPage" class="loginbox">
-<img src="logo.png" class="logo">
-<h2>Sains Quality Computer</h2>
+<div id="loginPage" class="login-box">
+<h2>LOGIN TOKO</h2>
 <input type="password" id="pass" placeholder="Password">
 <br>
-<button onclick="login()">LOGIN</button>
+<button onclick="login()">MASUK TOKO</button>
 </div>
 
-<!-- APP -->
 <div id="app" style="display:none;">
-<div class="header">
-Sains Quality Service Center
-<div class="jam" id="jam"></div>
-</div>
+<h2>Sains Quality Service Center</h2>
 
-<div class="container">
-<h3>Input Barang Service</h3>
+<input type="text" id="nama" placeholder="Nama Barang">
+<input type="number" id="jumlah" placeholder="Jumlah">
+<button onclick="tambah()">Tambah</button>
 
-<input id="nama" placeholder="Nama Barang">
-<input id="sn" placeholder="Serial Number">
-
-<button onclick="startScan()">SCAN BARCODE</button>
-<div id="reader" style="width:250px;margin:auto;"></div>
-
-<select id="status">
-<option>Masuk</option>
-<option>Selesai</option>
-<option>Diambil</option>
-</select>
-
-<br>
-<button onclick="tambah()">SIMPAN</button>
-<button onclick="download()">DOWNLOAD EXCEL</button>
-<button onclick="printStruk()">PRINT STRUK</button>
-<button onclick="backup()">BACKUP</button>
-<button onclick="restore()">RESTORE</button>
-
-<table id="tabel">
+<table>
+<thead>
 <tr>
-<th>Waktu</th>
 <th>Barang</th>
-<th>SN</th>
-<th>Status</th>
+<th>Jumlah</th>
 <th>Aksi</th>
 </tr>
+</thead>
+<tbody id="tabel"></tbody>
 </table>
-
 </div>
-</div>
-
-<audio id="beep">
-<source src="https://www.soundjay.com/misc/sounds/barcode-beep.mp3">
-</audio>
 
 <script>
+let password="12345"; // password login
+let data=JSON.parse(localStorage.getItem("dataToko"))||[];
 
-// LOGIN
 function login(){
-let p=document.getElementById("pass").value;
-if(p==="Elmijimo123"){
-document.getElementById("loginPage").style.display="none";
-document.getElementById("app").style.display="block";
-}else{
-alert("Password salah");
-}
+    let p=document.getElementById("pass").value;
+    if(p===password){
+        document.getElementById("loginPage").style.display="none";
+        document.getElementById("app").style.display="block";
+        render();
+    }else{
+        alert("Password salah");
+    }
 }
 
-// JAM REALTIME
-function jam(){
-let t=new Date();
-document.getElementById("jam").innerHTML=t.toLocaleString();
-}
-setInterval(jam,1000);
-
-// TAMBAH DATA
 function tambah(){
-let nama=document.getElementById("nama").value;
-let sn=document.getElementById("sn").value;
-let status=document.getElementById("status").value;
+    let nama=document.getElementById("nama").value;
+    let jumlah=document.getElementById("jumlah").value;
 
-if(nama==""){alert("Isi barang");return;}
+    if(!nama||!jumlah){
+        alert("Isi dulu bro");
+        return;
+    }
 
-let waktu=new Date().toLocaleString();
-
-let row=document.getElementById("tabel").insertRow();
-row.insertCell(0).innerHTML=waktu;
-row.insertCell(1).innerHTML=nama;
-row.insertCell(2).innerHTML=sn;
-row.insertCell(3).innerHTML=status;
-
-let aksi=row.insertCell(4);
-aksi.innerHTML=`
-<button onclick='editRow(this)'>Edit</button>
-<button onclick='hapus(this)'>Hapus</button>
-`;
-
-document.getElementById("beep").play();
-saveData();
+    data.push({nama,jumlah});
+    localStorage.setItem("dataToko",JSON.stringify(data));
+    render();
 }
 
-// SAVE
-function saveData(){
-localStorage.setItem("tabel",document.getElementById("tabel").innerHTML);
+function hapus(i){
+    let pin=prompt("Masukkan PIN BOS");
+    if(pin!=="999"){
+        alert("PIN salah");
+        return;
+    }
+
+    data.splice(i,1);
+    localStorage.setItem("dataToko",JSON.stringify(data));
+    render();
 }
 
-window.onload=function(){
-if(localStorage.getItem("tabel")){
-document.getElementById("tabel").innerHTML=localStorage.getItem("tabel");
+function render(){
+    let html="";
+    data.forEach((d,i)=>{
+        html+=`
+        <tr>
+        <td>${d.nama}</td>
+        <td>${d.jumlah}</td>
+        <td><button onclick="hapus(${i})">Hapus</button></td>
+        </tr>
+        `;
+    });
+    document.getElementById("tabel").innerHTML=html;
 }
-}
-
-// HAPUS PASSWORD ADMIN
-function hapusData(index){
-var pass = prompt("Masukkan password hapus:");
-if(pass !== "12345"){   // ganti password lu
-alert("Password salah!");
-return;
-}
-
-data.splice(index,1);
-localStorage.setItem("dataBarang", JSON.stringify(data));
-renderTable();
-}
-
-if(confirm("Hapus data?")){
-let row = btn.parentNode.parentNode;
-row.remove();
-saveData();
-}
-}
-
-// EDIT
-function editRow(btn){
-let row = btn.parentNode.parentNode;
-
-let nama = prompt("Edit nama", row.cells[1].innerHTML);
-let sn = prompt("Edit SN", row.cells[2].innerHTML);
-let status = prompt("Edit status", row.cells[3].innerHTML);
-
-if(nama){
-row.cells[1].innerHTML=nama;
-row.cells[2].innerHTML=sn;
-row.cells[3].innerHTML=status;
-saveData();
-}
-}
-
-// DOWNLOAD EXCEL
-function download(){
-let table=document.getElementById("tabel").outerHTML;
-let url='data:application/vnd.ms-excel,'+ encodeURIComponent(table);
-let link=document.createElement("a");
-link.href=url;
-link.download="data_service.xls";
-link.click();
-}
-
-// PRINT STRUK
-function printStruk(){
-let isi=document.getElementById("tabel").outerHTML;
-let win=window.open("");
-win.document.write("<h3>Sains Quality Service Center</h3>");
-win.document.write(isi);
-win.print();
-}
-
-// BACKUP
-function backup(){
-let data=localStorage.getItem("tabel");
-let blob=new Blob([data]);
-let a=document.createElement("a");
-a.href=URL.createObjectURL(blob);
-a.download="backup_toko.txt";
-a.click();
-}
-
-// RESTORE
-function restore(){
-let data=prompt("Paste backup:");
-if(data){
-localStorage.setItem("tabel",data);
-location.reload();
-}
-}
-
-// SCAN BARCODE
-function startScan(){
-document.getElementById("reader").innerHTML="";
-let scanner = new Html5Qrcode("reader");
-
-scanner.start(
-{ facingMode: "environment" },
-{ fps: 10, qrbox: 250 },
-(qr)=>{
-document.getElementById("sn").value=qr;
-document.getElementById("beep").play();
-scanner.stop();
-document.getElementById("reader").innerHTML="";
-},
-(err)=>{}
-);
-}
-
 </script>
+
 </body>
 </html>
+
 
 
 

@@ -114,6 +114,7 @@ Sains Quality Service Center
 <br>
 <button onclick="tambah()">SIMPAN</button>
 <button onclick="download()">DOWNLOAD EXCEL</button>
+<button onclick="printStruk()">PRINT STRUK TOKO</button>
 <button onclick="printPDF()">PRINT PDF</button>
 
 
@@ -196,6 +197,71 @@ let isi = document.getElementById("tabel").outerHTML;
 let win = window.open("");
 win.document.write("<h2>Sains Quality Service Center</h2>");
 win.document.write(isi);
+win.print();
+}
+
+function printStruk(){
+
+let table = document.getElementById("tabel");
+let rows = table.rows;
+
+let isi = "";
+
+for(let i=1;i<rows.length;i++){
+let col = rows[i].cells;
+isi += `
+<tr>
+<td>${col[0].innerHTML}</td>
+<td>${col[1].innerHTML}</td>
+<td>${col[2].innerHTML}</td>
+<td>${col[3].innerHTML}</td>
+</tr>
+`;
+}
+
+let win = window.open("","","width=400,height=600");
+
+win.document.write(`
+<html>
+<head>
+<title>Print</title>
+<style>
+body{font-family:monospace;text-align:center;}
+table{width:100%;border-collapse:collapse;}
+td{border-bottom:1px dashed #000;padding:4px;font-size:12px;}
+h2{margin:5px;}
+</style>
+</head>
+<body>
+
+<h2>Sains Quality</h2>
+<b>Service Center</b>
+<hr>
+${new Date().toLocaleString()}
+<hr>
+
+<table>
+<tr>
+<td>Waktu</td>
+<td>Barang</td>
+<td>SN</td>
+<td>Status</td>
+</tr>
+${isi}
+</table>
+
+<hr>
+Terima kasih 🙏<br>
+Barang harap diambil tepat waktu
+<br><br>
+TTD Customer
+<br><br><br>
+_____________
+
+</body>
+</html>
+`);
+
 win.print();
 }
 

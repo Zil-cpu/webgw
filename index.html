@@ -160,53 +160,59 @@ setInterval(jam,1000);
 
 // TAMBAH DATA
 function tambah(){
-let nama=document.getElementById("nama").value;
-let sn=document.getElementById("sn").value;
-let file = document.getElementById("foto").files[0];
+
+let nama = document.getElementById("nama").value;
+let sn = document.getElementById("sn").value;
+let status = document.getElementById("status").value;
+let fileInput = document.getElementById("foto");
+let file = fileInput.files[0];
+
+if(nama==""){
+alert("Isi nama barang dulu bro");
+return;
+}
+
+let waktu = new Date().toLocaleString();
+
+// kalau ada foto
+if(file){
 let reader = new FileReader();
 
 reader.onload = function(e){
-    let fotoBase64 = e.target.result;
+let foto = e.target.result;
 
-    data.push({
-        nama:nama,
-        serial:serial,
-        foto:fotoBase64
-    });
+data.push({
+waktu:waktu,
+foto:foto,
+nama:nama,
+sn:sn,
+status:status
+});
 
-    localStorage.setItem("dataService",JSON.stringify(data));
-    render();
-}
-
-if(file){
-    reader.readAsDataURL(file);
-}else{
-    alert("Foto belum dipilih bro");
-}
-
-<td><img src="${d.foto}" width="70"></td>
-
-let status=document.getElementById("status").value;
-
-if(nama==""){alert("Isi barang");return;}
-
-let waktu=new Date().toLocaleString();
-
-let row=document.getElementById("tabel").insertRow();
-row.insertCell(0).innerHTML=waktu;
-row.insertCell(1).innerHTML=nama;
-row.insertCell(2).innerHTML=sn;
-row.insertCell(3).innerHTML=status;
-
-let aksi=row.insertCell(4);
-aksi.innerHTML=`
-<button onclick='editRow(this)'>Edit</button>
-<button onclick='hapus(this)'>Hapus</button>
-`;
-
+localStorage.setItem("dataService", JSON.stringify(data));
+render();
 document.getElementById("beep").play();
-saveData();
+fileInput.value="";
 }
+
+reader.readAsDataURL(file);
+
+}else{
+// kalau tanpa foto
+data.push({
+waktu:waktu,
+foto:"",
+nama:nama,
+sn:sn,
+status:status
+});
+
+localStorage.setItem("dataService", JSON.stringify(data));
+render();
+document.getElementById("beep").play();
+}
+}
+
 
 // SAVE
 function saveData(){

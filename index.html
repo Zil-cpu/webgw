@@ -20,6 +20,10 @@ text-align:center;
 font-size:22px;
 font-weight:bold;
 box-shadow:0 0 10px black;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:15px;
 }
 
 .container{
@@ -71,13 +75,8 @@ border-bottom:1px solid #333;
 text-align:center;
 }
 
-th{
-background:#020617;
-}
-
-tr:hover{
-background:#020617;
-}
+th{background:#020617;}
+tr:hover{background:#020617;}
 
 .hapus{
 background:red;
@@ -97,11 +96,19 @@ border-radius:15px;
 text-align:center;
 box-shadow:0 0 25px black;
 }
+#jam{
+text-align:center;
+margin-top:5px;
+font-size:13px;
+color:#94a3b8;
+}
+img.logo{height:45px}
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
 <div id="login">
 <div class="loginbox">
 <h2>🔐 LOGIN ADMIN</h2>
@@ -111,18 +118,18 @@ box-shadow:0 0 25px black;
 </div>
 </div>
 
+<!-- APP -->
 <div id="app" style="display:none;">
-<header style="display:flex;align-items:center;justify-content:center;gap:15px;">
-<img src="logo.png" style="height:50px;">
+
+<header>
+<img src="logo.png" class="logo" onerror="this.style.display='none'">
 <div>
-<div style="font-size:20px;font-weight:bold;"> SERVICE SAINS QUALITY COMPUTER</div>
-<div style="font-size:12px;color:gray;">Data Barang Masuk & Keluar</div>
+<div>TOKO SERVICE</div>
+<div style="font-size:11px;color:gray;">Data Barang Masuk & Keluar</div>
 </div>
 </header>
 
-<div id="jam" style="text-align:center;margin-top:10px;font-size:14px;color:#94a3b8;"></div>
-
-
+<div id="jam"></div>
 
 <div class="container">
 
@@ -133,9 +140,7 @@ box-shadow:0 0 25px black;
 <input type="date" id="tanggal" required>
 <input type="text" id="nama" placeholder="Nama Barang" required>
 <input type="text" id="customer" placeholder="Customer" required>
-
 <input type="file" id="foto" accept="image/*">
-
 
 <select id="status">
 <option value="Masuk">Barang Masuk</option>
@@ -161,7 +166,6 @@ box-shadow:0 0 25px black;
 <th>Status</th>
 <th>Foto</th>
 <th>Hapus</th>
-
 </tr>
 </thead>
 <tbody id="tabel"></tbody>
@@ -197,120 +201,15 @@ isi+=`<tr>
 <td>${d.customer}</td>
 <td>${d.status}</td>
 <td>${d.foto ? `<img src="${d.foto}" width="60">` : "-"}</td>
-<td><button class="hapus"onclick="hapus(${i})">X</button></td>
+<td><button class="hapus" onclick="hapus(${i})">X</button></td>
 </tr>`;
 });
 document.getElementById("tabel").innerHTML=isi;
 }
 
 function tambahData(){
-let file = document.getElementById("foto").files[0];
-let reader = new FileReader();
+let file=document.get
 
-reader.onload = function(){
-let d={
-tanggal:document.getElementById("tanggal").value,
-nama:document.getElementById("nama").value,
-customer:document.getElementById("customer").value,
-status:document.getElementById("status").value,
-foto:reader.result
-};
-
-data.push(d);
-localStorage.setItem("service",JSON.stringify(data));
-tampil();
-document.querySelector("form").reset();
-}
-
-if(file){
-reader.readAsDataURL(file);
-}else{
-let d={
-tanggal:document.getElementById("tanggal").value,
-nama:document.getElementById("nama").value,
-customer:document.getElementById("customer").value,
-status:document.getElementById("status").value,
-foto:""
-};
-data.push(d);
-localStorage.setItem("service",JSON.stringify(data));
-tampil();
-document.querySelector("form").reset();
-}
-}
-
-let d={
-tanggal:document.getElementById("tanggal").value,
-nama:document.getElementById("nama").value,
-customer:document.getElementById("customer").value,
-status:document.getElementById("status").value
-};
-data.push(d);
-localStorage.setItem("service",JSON.stringify(data));
-tampil();
-document.querySelector("form").reset();
-}
-
-function hapus(i){
-data.splice(i,1);
-localStorage.setItem("service",JSON.stringify(data));
-tampil();
-}
-
-function downloadExcel(){
-let csv="Tanggal,Barang,Customer,Status\n";
-data.forEach(d=>{
-csv+=`${d.tanggal},${d.nama},${d.customer},${d.status}\n`;
-});
-let blob=new Blob([csv],{type:'text/csv'});
-let url=window.URL.createObjectURL(blob);
-let a=document.createElement("a");
-a.href=url;
-a.download="data_service.csv";
-a.click();
-}
-
-function printData(){
-let isi="<h2>DATA SERVICE</h2><table border='1' style='width:100%;border-collapse:collapse'><tr><th>Tanggal</th><th>Barang</th><th>Customer</th><th>Status</th></tr>";
-data.forEach(d=>{
-isi+=`<tr>
-<td>${d.tanggal}</td>
-<td>${d.nama}</td>
-<td>${d.customer}</td>
-<td>${d.status}</td>
-</tr>`;
-});
-isi+="</table>";
-let win=window.open("");
-win.document.write(isi);
-win.print();
-}
-
-tampil();
-
-function updateJam(){
-let now = new Date();
-
-let tgl = now.toLocaleDateString("id-ID", {
-weekday:"long",
-year:"numeric",
-month:"long",
-day:"numeric"
-});
-
-let jam = now.toLocaleTimeString("id-ID");
-
-document.getElementById("jam").innerHTML =
-"🕒 " + tgl + " | " + jam;
-}
-
-setInterval(updateJam,1000);
-updateJam();
-
-</script>
-
-</body>
-</html>
 
 
 

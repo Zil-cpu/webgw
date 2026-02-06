@@ -118,8 +118,27 @@ Sains Quality Service Center
 <br>
 <button onclick="tambah()">SIMPAN</button>
 <button onclick="download()">DOWNLOAD EXCEL</button>
+<button onclick="backup()">BACKUP DATA</button>
+<button onclick="restore()">RESTORE DATA</button>
 <button onclick="printStruk()">PRINT STRUK TOKO</button>
 <button onclick="printPDF()">PRINT PDF</button>
+
+function backup(){
+let data = localStorage.getItem("tabel");
+let blob = new Blob([data]);
+let a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = "backup_toko.txt";
+a.click();
+}
+
+function restore(){
+let data = prompt("Paste data backup disini:");
+if(data){
+localStorage.setItem("tabel",data);
+location.reload();
+}
+}
 
 
 <table id="tabel">

@@ -143,7 +143,7 @@ Sains Quality Service Center
 // LOGIN
 function login(){
 let p=document.getElementById("pass").value;
-if(p==="12345"){
+if(p==="Elmijimo123"){
 document.getElementById("loginPage").style.display="none";
 document.getElementById("app").style.display="block";
 }else{
@@ -196,12 +196,13 @@ document.getElementById("tabel").innerHTML=localStorage.getItem("tabel");
 }
 
 // HAPUS PASSWORD ADMIN
-function hapus(btn){
-let pass = prompt("Password hapus:");
-if(pass!=="admin123"){
-alert("Password salah");
+function hapusData(index){
+var pass = prompt("Masukkan password hapus:");
+if(pass !== "12345"){   // ganti password lu
+alert("Password salah!");
 return;
 }
+
 if(confirm("Hapus data?")){
 let row = btn.parentNode.parentNode;
 row.remove();

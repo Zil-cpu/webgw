@@ -1,214 +1,103 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Service Center App</title>
+    <title>LOGIN WEBGW</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body{
-font-family:Arial, sans-serif;
-background:linear-gradient(135deg,#020617,#0f172a);
-color:white;
-margin:0;
-}
+    <style>
+        body{
+            background:#0c0f24;
+            font-family:Arial;
+            text-align:center;
+            color:white;
+        }
 
-header{
-background:#020617;
-padding:15px;
-text-align:center;
-font-size:22px;
-font-weight:bold;
-box-shadow:0 0 10px black;
-display:flex;
-align-items:center;
-justify-content:center;
-gap:15px;
-}
+        .box{
+            width:320px;
+            margin:auto;
+            margin-top:120px;
+            background:#11152b;
+            padding:30px;
+            border-radius:10px;
+            box-shadow:0 0 20px #000;
+        }
 
-.container{
-padding:20px;
-max-width:1100px;
-margin:auto;
-}
+        input{
+            width:100%;
+            padding:12px;
+            margin:8px 0;
+            border:none;
+            border-radius:6px;
+            background:#1c2147;
+            color:white;
+        }
 
-.card{
-background:#111827;
-padding:20px;
-border-radius:15px;
-box-shadow:0 0 20px rgba(0,0,0,0.5);
-margin-bottom:20px;
-}
+        button{
+            width:100%;
+            padding:12px;
+            margin-top:10px;
+            background:#00c3ff;
+            border:none;
+            border-radius:6px;
+            font-weight:bold;
+            cursor:pointer;
+        }
 
-input,select{
-padding:12px;
-margin:6px;
-border-radius:8px;
-border:none;
-background:#020617;
-color:white;
-}
+        button:hover{
+            background:#0099cc;
+        }
 
-button{
-padding:12px 20px;
-margin:6px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-font-weight:bold;
-}
-
-.save{background:#22c55e;}
-.logout{background:#ef4444;}
-.excel{background:#3b82f6;}
-.print{background:#f59e0b;}
-
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:15px;
-}
-
-th,td{
-padding:12px;
-border-bottom:1px solid #333;
-text-align:center;
-}
-
-th{background:#020617;}
-tr:hover{background:#020617;}
-
-.hapus{
-background:red;
-padding:5px 10px;
-border:none;
-border-radius:6px;
-color:white;
-cursor:pointer;
-}
-
-.loginbox{
-max-width:350px;
-margin:120px auto;
-background:#111827;
-padding:30px;
-border-radius:15px;
-text-align:center;
-box-shadow:0 0 25px black;
-}
-#jam{
-text-align:center;
-margin-top:5px;
-font-size:13px;
-color:#94a3b8;
-}
-img.logo{height:45px}
-</style>
+        img{
+            width:90px;
+            margin-bottom:15px;
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="login">
-<div class="loginbox">
-<h2>🔐 LOGIN ADMIN</h2>
-<input type="text" id="user" placeholder="Username"><br>
-<input type="password" id="pass" placeholder="Password"><br>
-<button class="save" onclick="login()">LOGIN</button>
-</div>
-</div>
+<div class="box">
 
-<!-- APP -->
-<div id="app" style="display:none;">
+    <!-- kalau logo error, hapus aja -->
+    <img src="https://i.imgur.com/8Km9tLL.png">
 
-<header>
-<img src="logo.png" class="logo" onerror="this.style.display='none'">
-<div>
-<div>SERVICE SAINS QUALITY COMPUTER</div>
-<div style="font-size:11px;color:gray;">Data Barang Masuk & Keluar</div>
-</div>
-</header>
+    <h2>LOGIN WEBGW</h2>
 
-<div id="jam"></div>
+    <input type="text" id="user" placeholder="Username">
+    <input type="password" id="pass" placeholder="Password">
 
-<div class="container">
+    <button onclick="login()">LOGIN</button>
 
-<div class="card">
-<h3>Input Barang Service</h3>
+    <p id="msg"></p>
 
-<form onsubmit="tambahData(); return false;">
-<input type="date" id="tanggal" required>
-<input type="text" id="nama" placeholder="Nama Barang" required>
-<input type="text" id="customer" placeholder="Customer" required>
-<input type="file" id="foto" accept="image/*">
-
-<select id="status">
-<option value="Masuk">Barang Masuk</option>
-<option value="Keluar">Barang Keluar</option>
-</select>
-
-<br>
-<button class="save">Simpan</button>
-<button type="button" class="logout" onclick="logout()">Logout</button>
-<button type="button" class="excel" onclick="downloadExcel()">Excel</button>
-<button type="button" class="print" onclick="printData()">Print</button>
-</form>
-</div>
-
-<div class="card">
-<h3>Data Service</h3>
-<table>
-<thead>
-<tr>
-<th>Tanggal</th>
-<th>Barang</th>
-<th>Customer</th>
-<th>Status</th>
-<th>Foto</th>
-<th>Hapus</th>
-</tr>
-</thead>
-<tbody id="tabel"></tbody>
-</table>
-</div>
-
-</div>
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("service")) || [];
-
 function login(){
-let u=document.getElementById("user").value;
-let p=document.getElementById("pass").value;
 
-if(u==="admin" && p==="12345"){
-document.getElementById("login").style.display="none";
-document.getElementById("app").style.display="block";
-}else{
-alert("Login salah!");
+    var u = document.getElementById("user").value;
+    var p = document.getElementById("pass").value;
+
+    // USER & PASS LOGIN
+    if(u=="admin" && p=="admin123"){
+        document.getElementById("msg").innerHTML="Login Berhasil...";
+        document.getElementById("msg").style.color="lime";
+
+        // redirect setelah login
+        setTimeout(function(){
+            window.location.href="https://google.com";
+        },1000);
+
+    }else{
+        document.getElementById("msg").innerHTML="Username / Password salah!";
+        document.getElementById("msg").style.color="red";
+    }
 }
-}
+</script>
 
-function logout(){location.reload();}
+</body>
+</html>
 
-function tampil(){
-let isi="";
-data.forEach((d,i)=>{
-isi+=`<tr>
-<td>${d.tanggal}</td>
-<td>${d.nama}</td>
-<td>${d.customer}</td>
-<td>${d.status}</td>
-<td>${d.foto ? `<img src="${d.foto}" width="60">` : "-"}</td>
-<td><button class="hapus" onclick="hapus(${i})">X</button></td>
-</tr>`;
-});
-document.getElementById("tabel").innerHTML=isi;
-}
-
-function tambahData(){
-let file=document.get
 
 
 

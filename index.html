@@ -105,7 +105,7 @@ Sains Quality Service Center
 <input id="nama" placeholder="Nama Barang">
 <input id="sn" placeholder="Serial Number">
 
-<button onclick="startScan()">FOTO UNIT</button>
+<input type="file" id="foto" accept="image/*" capture="environment" style="margin:10px;">
 <div id="reader" style="width:250px;margin:auto;"></div>
 
 <select id="status">
@@ -162,6 +162,30 @@ setInterval(jam,1000);
 function tambah(){
 let nama=document.getElementById("nama").value;
 let sn=document.getElementById("sn").value;
+let file = document.getElementById("foto").files[0];
+let reader = new FileReader();
+
+reader.onload = function(e){
+    let fotoBase64 = e.target.result;
+
+    data.push({
+        nama:nama,
+        serial:serial,
+        foto:fotoBase64
+    });
+
+    localStorage.setItem("dataService",JSON.stringify(data));
+    render();
+}
+
+if(file){
+    reader.readAsDataURL(file);
+}else{
+    alert("Foto belum dipilih bro");
+}
+
+<td><img src="${d.foto}" width="70"></td>
+
 let status=document.getElementById("status").value;
 
 if(nama==""){alert("Isi barang");return;}

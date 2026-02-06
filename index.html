@@ -114,6 +114,8 @@ Sains Quality Service Center
 <br>
 <button onclick="tambah()">SIMPAN</button>
 <button onclick="download()">DOWNLOAD EXCEL</button>
+<button onclick="printPDF()">PRINT PDF</button>
+
 
 <table id="tabel">
 <tr>
@@ -187,6 +189,14 @@ let link=document.createElement("a");
 link.href=url;
 link.download="data_service.xls";
 link.click();
+}
+
+function printPDF(){
+let isi = document.getElementById("tabel").outerHTML;
+let win = window.open("");
+win.document.write("<h2>Sains Quality Service Center</h2>");
+win.document.write(isi);
+win.print();
 }
 
 </script>

@@ -82,8 +82,9 @@ cursor:pointer;
 <button type="submit">Simpan</button>
 <button type="button" onclick="logout()" style="background:red;">Logout</button>
 <button type="button" onclick="downloadExcel()" style="background:blue;">
-Download Excel
-</button>
+Download Excel</button>
+<button type="button" onclick="printData()" style="background:orange;">
+Print Laporan</button>
 </form>
 
 <table>
@@ -153,6 +154,34 @@ tampil();
 }
 
 tampil();
+function printData(){
+let isi = `
+<h2>DATA SERVICE BARANG</h2>
+<table border="1" style="border-collapse:collapse;width:100%;">
+<tr>
+<th>Tanggal</th>
+<th>Barang</th>
+<th>Customer</th>
+<th>Status</th>
+</tr>
+`;
+
+data.forEach(d=>{
+isi += `<tr>
+<td>${d.tanggal}</td>
+<td>${d.nama}</td>
+<td>${d.customer}</td>
+<td>${d.status}</td>
+</tr>`;
+});
+
+isi += "</table>";
+
+let win = window.open("", "", "width=900,height=700");
+win.document.write(isi);
+win.print();
+}
+
 function downloadExcel(){
 let csv = "Tanggal,Barang,Customer,Status\n";
 

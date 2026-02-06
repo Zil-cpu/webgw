@@ -1,302 +1,197 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-<link rel="icon" href="icon.png">
-<link rel="apple-touch-icon" href="icon.png">
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Service Center App</title>
+<title>Sains Quality Computer</title>
+
+<link rel="icon" href="logo.png">
 
 <style>
 body{
-font-family:Arial, sans-serif;
-background:linear-gradient(135deg,#020617,#0f172a);
-color:white;
+font-family:Arial;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
 margin:0;
+color:white;
+text-align:center;
 }
 
-header{
-background:#020617;
+.header{
+background:black;
 padding:15px;
-text-align:center;
 font-size:22px;
 font-weight:bold;
-box-shadow:0 0 10px black;
+}
+
+.jam{
+font-size:18px;
+margin-top:5px;
+color:#00ffcc;
 }
 
 .container{
-padding:20px;
-max-width:1100px;
-margin:auto;
-}
-
-.card{
-background:#111827;
+background:white;
+color:black;
+margin:20px;
 padding:20px;
 border-radius:15px;
-box-shadow:0 0 20px rgba(0,0,0,0.5);
-margin-bottom:20px;
+box-shadow:0 0 20px rgba(0,0,0,0.4);
 }
 
-input,select{
-padding:12px;
-margin:6px;
+input,select,button{
+padding:10px;
+margin:5px;
+width:90%;
 border-radius:8px;
-border:none;
-background:#020617;
-color:white;
+border:1px solid #ccc;
 }
 
 button{
-padding:12px 20px;
-margin:6px;
-border:none;
-border-radius:10px;
-cursor:pointer;
+background:#007bff;
+color:white;
 font-weight:bold;
 }
 
-.save{background:#22c55e;}
-.logout{background:#ef4444;}
-.excel{background:#3b82f6;}
-.print{background:#f59e0b;}
+button:hover{
+background:#0056b3;
+}
 
 table{
 width:100%;
-border-collapse:collapse;
 margin-top:15px;
+border-collapse:collapse;
 }
 
 th,td{
-padding:12px;
-border-bottom:1px solid #333;
-text-align:center;
+border:1px solid #ccc;
+padding:8px;
 }
 
 th{
-background:#020617;
-}
-
-tr:hover{
-background:#020617;
-}
-
-.hapus{
-background:red;
-padding:5px 10px;
-border:none;
-border-radius:6px;
+background:#007bff;
 color:white;
-cursor:pointer;
+}
+
+.logo{
+width:80px;
+margin-top:10px;
 }
 
 .loginbox{
-max-width:350px;
-margin:120px auto;
-background:#111827;
-padding:30px;
-border-radius:15px;
-text-align:center;
-box-shadow:0 0 25px black;
+margin-top:100px;
 }
+
 </style>
 </head>
 
 <body>
 
-<div id="login">
-<div class="loginbox">
-<h2>🔐 LOGIN ADMIN</h2>
-<input type="text" id="user" placeholder="Username"><br>
-<input type="password" id="pass" placeholder="Password"><br>
-<button class="save" onclick="login()">LOGIN</button>
-</div>
+<div id="loginPage" class="loginbox">
+<img src="logo.png" class="logo">
+<h2>Sains Quality Computer</h2>
+<input type="password" id="pass" placeholder="Password">
+<br>
+<button onclick="login()">LOGIN</button>
 </div>
 
 <div id="app" style="display:none;">
-<header style="display:flex;align-items:center;justify-content:center;gap:15px;">
-<img src="logo.png" style="height:50px;">
-<div>
-<div style="font-size:20px;font-weight:bold;">TOKO SERVICE SAINS QUALITY COMPUTER</div>
-<div style="font-size:12px;color:gray;">Data Barang Masuk & Keluar</div>
+<div class="header">
+Sains Quality Service Center
+<div class="jam" id="jam"></div>
 </div>
-</header>
-<div id="jam" style="text-align:center;margin-top:10px;font-size:14px;color:#94a3b8;"></div>
-
 
 <div class="container">
-
-<div class="card">
 <h3>Input Barang Service</h3>
 
-<form onsubmit="tambahData(); return false;">
-<input type="date" id="tanggal" required>
-<input type="text" id="nama" placeholder="Nama Barang" required>
-<input type="text" id="customer" placeholder="Customer" required>
-<input type="file" id="foto" accept="image/*">
-
-
+<input id="nama" placeholder="Nama Barang">
+<input id="sn" placeholder="Serial Number">
 <select id="status">
-<option value="Masuk">Barang Masuk</option>
-<option value="Keluar">Barang Keluar</option>
+<option>Masuk</option>
+<option>Selesai</option>
+<option>Diambil</option>
 </select>
 
 <br>
-<button class="save">Simpan</button>
-<button type="button" class="logout" onclick="logout()">Logout</button>
-<button type="button" class="excel" onclick="downloadExcel()">Excel</button>
-<button type="button" class="print" onclick="printData()">Print</button>
-</form>
-</div>
+<button onclick="tambah()">SIMPAN</button>
+<button onclick="download()">DOWNLOAD EXCEL</button>
 
-<div class="card">
-<h3>Data Service</h3>
-<table>
-<thead>
+<table id="tabel">
 <tr>
-<th>Tanggal</th>
+<th>Waktu</th>
 <th>Barang</th>
-<th>Customer</th>
+<th>SN</th>
 <th>Status</th>
-<th>Foto</th>
-<th>Hapus</th>
-
 </tr>
-</thead>
-<tbody id="tabel"></tbody>
 </table>
-</div>
 
 </div>
 </div>
+
+<audio id="beep">
+<source src="https://www.soundjay.com/buttons/sounds/button-3.mp3">
+</audio>
 
 <script>
-let data = JSON.parse(localStorage.getItem("service")) || [];
 
 function login(){
-let u=document.getElementById("user").value;
 let p=document.getElementById("pass").value;
-
-if(u==="admin" && p==="Elmijimo"){
-document.getElementById("login").style.display="none";
+if(p==="12345"){
+document.getElementById("loginPage").style.display="none";
 document.getElementById("app").style.display="block";
 }else{
-alert("Login salah!");
+alert("Password salah");
 }
 }
 
-function logout(){location.reload();}
+function jam(){
+let t=new Date();
+document.getElementById("jam").innerHTML=t.toLocaleString();
+}
+setInterval(jam,1000);
 
-function tampil(){
-let isi="";
-data.forEach((d,i)=>{
-isi+=`<tr>
-<td>${d.tanggal}</td>
-<td>${d.nama}</td>
-<td>${d.customer}</td>
- <td>${d.status}</td>
-<td>${d.foto ? `<img src="${d.foto}" width="60">` : "-"}</td>
-<td><button class="hapus"onclick="hapus(${i})">X</button></td>
-</tr>`;
-});
-document.getElementById("tabel").innerHTML=isi;
+function tambah(){
+let nama=document.getElementById("nama").value;
+let sn=document.getElementById("sn").value;
+let status=document.getElementById("status").value;
+
+if(nama==""){alert("Isi barang");return;}
+
+let waktu=new Date().toLocaleString();
+
+let row=document.getElementById("tabel").insertRow();
+row.insertCell(0).innerHTML=waktu;
+row.insertCell(1).innerHTML=nama;
+row.insertCell(2).innerHTML=sn;
+row.insertCell(3).innerHTML=status;
+
+document.getElementById("beep").play();
+
+saveData();
 }
 
-function tambahData(){
-let file = document.getElementById("foto").files[0];
-let reader = new FileReader();
-
-reader.onload = function(){
-let d={
-tanggal:document.getElementById("tanggal").value,
-nama:document.getElementById("nama").value,
-customer:document.getElementById("customer").value,
-status:document.getElementById("status").value,
-foto:reader.result
-};
-
-data.push(d);
-localStorage.setItem("service",JSON.stringify(data));
-tampil();
-document.querySelector("form").reset();
+function saveData(){
+localStorage.setItem("tabel",document.getElementById("tabel").innerHTML);
 }
 
-if(file){
-reader.readAsDataURL(file);
-}else{
-let d={
-tanggal:document.getElementById("tanggal").value,
-nama:document.getElementById("nama").value,
-customer:document.getElementById("customer").value,
-status:document.getElementById("status").value,
-foto:""
-};
-data.push(d);
-localStorage.setItem("service",JSON.stringify(data));
-tampil();
-document.querySelector("form").reset();
+window.onload=function(){
+if(localStorage.getItem("tabel")){
+document.getElementById("tabel").innerHTML=localStorage.getItem("tabel");
 }
 }
 
-function hapus(i){
-data.splice(i,1);
-localStorage.setItem("service",JSON.stringify(data));
-tampil();
+function download(){
+let table=document.getElementById("tabel").outerHTML;
+let url='data:application/vnd.ms-excel,'+ encodeURIComponent(table);
+let link=document.createElement("a");
+link.href=url;
+link.download="data_service.xls";
+link.click();
 }
 
-function downloadExcel(){
-let csv="Tanggal,Barang,Customer,Status\n";
-data.forEach(d=>{
-csv+=`${d.tanggal},${d.nama},${d.customer},${d.status}\n`;
-});
-let blob=new Blob([csv],{type:'text/csv'});
-let url=window.URL.createObjectURL(blob);
-let a=document.createElement("a");
-a.href=url;
-a.download="data_service.csv";
-a.click();
-}
-
-function printData(){
-let isi="<h2>DATA SERVICE</h2><table border='1' style='width:100%;border-collapse:collapse'><tr><th>Tanggal</th><th>Barang</th><th>Customer</th><th>Status</th></tr>";
-data.forEach(d=>{
-isi+=`<tr>
-<td>${d.tanggal}</td>
-<td>${d.nama}</td>
-<td>${d.customer}</td>
-<td>${d.status}</td>
-</tr>`;
-});
-isi+="</table>";
-let win=window.open("");
-win.document.write(isi);
-win.print();
-}
-
-tampil();
-function updateJam(){
-let now = new Date();
-
-let tgl = now.toLocaleDateString("id-ID", {
-weekday:"long",
-year:"numeric",
-month:"long",
-day:"numeric"
-});
-
-let jam = now.toLocaleTimeString("id-ID");
-
-document.getElementById("jam").innerHTML =
-"🕒 " + tgl + " | " + jam;
-}
-
-setInterval(updateJam,1000);
-updateJam();
 </script>
-
 </body>
 </html>
+
 
 
 

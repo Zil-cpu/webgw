@@ -119,6 +119,7 @@ box-shadow:0 0 25px black;
 <div style="font-size:12px;color:gray;">Data Barang Masuk & Keluar</div>
 </div>
 </header>
+<div id="jam" style="text-align:center;margin-top:10px;font-size:14px;color:#94a3b8;"></div>
 
 
 <div class="container">
@@ -243,6 +244,24 @@ win.print();
 }
 
 tampil();
+function updateJam(){
+let now = new Date();
+
+let tgl = now.toLocaleDateString("id-ID", {
+weekday:"long",
+year:"numeric",
+month:"long",
+day:"numeric"
+});
+
+let jam = now.toLocaleTimeString("id-ID");
+
+document.getElementById("jam").innerHTML =
+"🕒 " + tgl + " | " + jam;
+}
+
+setInterval(updateJam,1000);
+updateJam();
 </script>
 
 </body>

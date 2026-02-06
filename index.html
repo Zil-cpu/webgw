@@ -128,6 +128,7 @@ Sains Quality Service Center
 <th>Barang</th>
 <th>SN</th>
 <th>Status</th>
+<th>Hapus</th>
 </tr>
 </table>
 
@@ -171,6 +172,9 @@ row.insertCell(0).innerHTML=waktu;
 row.insertCell(1).innerHTML=nama;
 row.insertCell(2).innerHTML=sn;
 row.insertCell(3).innerHTML=status;
+let btn = row.insertCell(4);
+btn.innerHTML = "<button onclick='hapus(this)'>Hapus</button>";
+
 
 document.getElementById("beep").play();
 
@@ -285,6 +289,14 @@ document.getElementById("beep").play();
 },
 (errorMessage)=>{}
 );
+}
+
+function hapus(btn){
+if(confirm("Hapus data ini?")){
+let row = btn.parentNode.parentNode;
+row.remove();
+saveData();
+}
 }
 
 </script>

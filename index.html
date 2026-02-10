@@ -39,6 +39,7 @@ background:#2196f3;
 color:white;
 border:none;
 font-weight:bold;
+cursor:pointer;
 }
 
 button:hover{
@@ -88,7 +89,7 @@ width:80px;
 <input type="file" id="foto" accept="image/*">
 
 <button onclick="simpan()">💾 SIMPAN</button>
-<button onclick="downloadExcel()">DOWNLOAD EXCEL</button>
+<button onclick="downloadExcel()">📥 DOWNLOAD EXCEL</button>
 <button onclick="printData()">🖨 PRINT DATA</button>
 </div>
 
@@ -117,7 +118,7 @@ document.getElementById("loginBox").style.display="none"
 document.getElementById("app").style.display="block"
 render()
 }else{
-alert("Password salah")
+alert("Password salah bro")
 }
 }
 
@@ -172,7 +173,7 @@ t.innerHTML+=`
 }
 
 function hapus(i){
-if(confirm("Hapus data?")){
+if(confirm("Hapus data bro?")){
 db.splice(i,1)
 localStorage.setItem("db",JSON.stringify(db))
 render()
@@ -183,19 +184,18 @@ function printData(){
 window.print()
 }
 
-// EXPORT EXCEL TOKO
-// ================= EXPORT EXCEL TOKO =================
+<!-- FIX EXPORT EXCEL -->
 function downloadExcel(){
 
-if(!data || data.length===0){
+if(db.length===0){
 alert("Data masih kosong bro");
 return;
 }
 
-let csv = "WAKTU,BARANG,SN,KETERANGAN,STATUS\n";
+let csv = "NAMA CUSTOMER,BARANG,KETERANGAN\n";
 
-data.forEach(d=>{
-csv += `"${d.waktu}","${d.nama}","${d.sn}","${d.ket}","${d.status}"\n`;
+db.forEach(d=>{
+csv += `"${d.nama}","${d.barang}","${d.ket}"\n`;
 });
 
 let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -205,11 +205,8 @@ link.href = URL.createObjectURL(blob);
 link.download = "Data_Service_Toko.csv";
 link.click();
 
-alert("Excel berhasil didownload bro 😎");
+alert("Excel berhasil didownload 😎");
 }
-
-
-  
 </script>
 
 </body>

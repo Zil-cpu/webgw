@@ -49,6 +49,7 @@ padding:10px;
 border-bottom:1px solid #ddd;
 font-size:14px;
 }
+img.preview{width:70px;}
 </style>
 </head>
 
@@ -70,9 +71,10 @@ font-size:14px;
 <input id="nama" placeholder="Nama Customer">
 <input id="barang" placeholder="Nama Barang">
 <input id="ket" placeholder="Keluhan">
+<input type="file" id="foto" accept="image/*">
 
 <button onclick="simpan()">💾 SIMPAN</button>
-<button onclick="downloadExcel()">📥 DOWNLOAD EXCEL</button>
+<button onclick="downloadExcel()">📥 EXCEL</button>
 </div>
 
 <div class="box">
@@ -94,6 +96,7 @@ render()
 }else alert("Password salah")
 }
 
+// auto nomor
 function getNextNo(){
 let last = localStorage.getItem("noService") || 0
 last++
@@ -105,6 +108,7 @@ function simpan(){
 let nama=document.getElementById("nama").value
 let barang=document.getElementById("barang").value
 let ket=document.getElementById("ket").value
+let file=document.getElementById("foto").files[0]
 
 if(!nama||!barang){alert("Isi dulu bro");return}
 
@@ -112,13 +116,26 @@ let no=getNextNo()
 let status="Proses"
 let waktu=new Date().toLocaleString()
 
-db.push({no,nama,barang,ket,status,waktu})
-localStorage.setItem("db",JSON.stringify(db))
+if(file){
+let reader=new FileReader()
+reader.onload=function(e){
+db.push({no,nama,barang,ket,status,waktu,foto:e.target.result})
+save()
+}
+reader.readAsDataURL(file)
+}else{
+db.push({no,nama,barang,ket,status,waktu,foto:""})
+save()
+}
 
 document.getElementById("nama").value=""
 document.getElementById("barang").value=""
 document.getElementById("ket").value=""
+document.getElementById("foto").value=""
+}
 
+function save(){
+localStorage.setItem("db",JSON.stringify(db))
 render()
 }
 
@@ -130,6 +147,8 @@ t.innerHTML=`<tr>
 <th>Nama</th>
 <th>Barang</th>
 <th>Status</th>
+<th>Foto</th>
+<th>Struk</th>
 <th>Hapus</th>
 </tr>`
 
@@ -139,24 +158,58 @@ t.innerHTML+=`
 <td>${d.no}</td>
 <td>${d.nama}</td>
 <td>${d.barang}</td>
-<td>${d.status}</td>
+<td>
+<select onchange="ubahStatus(${i},this.value)">
+<option ${d.status=="Proses"?"selected":""}>Proses</option>
+<option ${d.status=="Selesai"?"selected":""}>Selesai</option>
+</select>
+</td>
+<td>${d.foto?'<img src="'+d.foto+'" class="preview">':""}</td>
+<td><button onclick='printStruk(${JSON.stringify(d)})'>🧾</button></td>
 <td><button onclick="hapus(${i})">❌</button></td>
 </tr>`
 })
 }
 
+function ubahStatus(i,val){
+db[i].status=val
+save()
+}
+
 function hapus(i){
 if(confirm("Hapus data?")){
 db.splice(i,1)
-localStorage.setItem("db",JSON.stringify(db))
-render()
+save()
 }
 }
 
+// print struk
+function printStruk(d){
+let win=window.open("","","width=300,height=600")
+win.document.write(`
+<html>
+<body style="font-family:monospace;text-align:center">
+<h3>SAINS QUALITY</h3>
+Service Center<hr>
+No: <b>${d.no}</b><br><br>
+Nama: ${d.nama}<br>
+Barang: ${d.barang}<br>
+Keluhan: ${d.ket}<br>
+Status: ${d.status}<br>
+Tanggal: ${d.waktu}<br>
+<hr>
+Terima kasih 🙏
+</body></html>
+`)
+win.document.close()
+win.print()
+}
+
+// excel
 function downloadExcel(){
 if(db.length==0){alert("Data kosong");return}
 
-let csv="NO,NAMA,BARANG,KETERANGAN,STATUS,TANGGAL\n"
+let csv="NO,NAMA,BARANG,KELUHAN,STATUS,TANGGAL\n"
 db.forEach(d=>{
 csv+=`${d.no},"${d.nama}","${d.barang}","${d.ket}","${d.status}","${d.waktu}"\n`
 })
@@ -171,6 +224,7 @@ link.click()
 
 </body>
 </html>
+
 
 
 

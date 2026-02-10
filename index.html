@@ -240,9 +240,10 @@ html+=`
 <td>${d.ket || "-"}</td>
 <td>${d.status}</td>
 <td>
-<button onclick="print1(${i})">Print</button>
+<button onclick="print1(${i})">🖨 Print</button>
 <button onclick="hapus(${i})">Hapus</button>
 </td>
+
 </tr>`;
 });
 
@@ -349,7 +350,114 @@ h2{text-align:center}
 win.print();
 }
 
-  
+function print1(i){
+let d = data[i];
+
+let no = "SRV"+Math.floor(Math.random()*99999);
+
+let win = window.open("", "", "width=400,height=700");
+
+win.document.write(`
+<html>
+<head>
+<title>Struk Service</title>
+
+<style>
+body{
+font-family:Arial;
+padding:15px;
+width:300px;
+}
+
+.logo{
+width:70px;
+display:block;
+margin:auto;
+}
+
+h2{
+text-align:center;
+margin:5px;
+}
+
+hr{
+border:1px dashed black;
+margin:8px 0;
+}
+
+table{
+width:100%;
+font-size:13px;
+}
+
+td{
+padding:3px;
+vertical-align:top;
+}
+
+.footer{
+text-align:center;
+margin-top:15px;
+font-size:12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<img src="logo.png" class="logo">
+<h2>Sains Quality Service Center</h2>
+<div style="text-align:center;font-size:12px">
+Jl Service Komputer Profesional<br>
+HP: 08xxxxxxxx
+</div>
+
+<hr>
+
+<table>
+<tr><td>No Service</td><td>: ${no}</td></tr>
+<tr><td>Tanggal</td><td>: ${d.waktu}</td></tr>
+<tr><td>Barang</td><td>: ${d.nama}</td></tr>
+<tr><td>SN</td><td>: ${d.sn}</td></tr>
+<tr><td>Keluhan</td><td>: ${d.ket}</td></tr>
+<tr><td>Status</td><td>: ${d.status}</td></tr>
+</table>
+
+<hr>
+
+<div class="footer">
+Terima kasih 🙏<br>
+Barang tidak diambil 30 hari<br>
+bukan tanggung jawab kami
+</div>
+
+<br><br>
+
+<table style="width:100%;text-align:center">
+<tr>
+<td>Customer</td>
+<td>Admin</td>
+</tr>
+<tr>
+<td style="height:50px"></td>
+<td></td>
+</tr>
+<tr>
+<td>(________)</td>
+<td>(________)</td>
+</tr>
+</table>
+
+<script>
+window.print();
+</script>
+
+</body>
+</html>
+`);
+}
+ 
 </script>
 </body>
 </html>

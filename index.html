@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sains Quality Service Center</title>
 
-<link rel="manifest" href="manifest.json">
-
 <style>
 body{
 font-family:Arial;
@@ -42,9 +40,7 @@ font-weight:bold;
 cursor:pointer;
 }
 
-button:hover{
-background:#0b7dda;
-}
+button:hover{background:#0b7dda;}
 
 table{
 width:100%;
@@ -57,11 +53,10 @@ border-radius:10px;
 td,th{
 padding:10px;
 border-bottom:1px solid #ddd;
+font-size:14px;
 }
 
-img.preview{
-width:80px;
-}
+img.preview{width:70px;}
 </style>
 </head>
 
@@ -73,7 +68,6 @@ width:80px;
 <div class="box" id="loginBox">
 <h3>LOGIN TOKO</h3>
 <input type="password" id="pass" placeholder="Password">
-<br>
 <button onclick="login()">MASUK</button>
 </div>
 
@@ -90,20 +84,12 @@ width:80px;
 
 <button onclick="simpan()">💾 SIMPAN</button>
 <button onclick="downloadExcel()">📥 DOWNLOAD EXCEL</button>
-<button onclick="printData()">🖨 PRINT DATA</button>
+<button onclick="printData()">🖨 PRINT</button>
 </div>
 
 <div class="box">
 <h3>DATA SERVICE</h3>
-<table id="tabel">
-<tr>
-<th>Nama</th>
-<th>Barang</th>
-<th>Keterangan</th>
-<th>Foto</th>
-<th>Hapus</th>
-</tr>
-</table>
+<table id="tabel"></table>
 </div>
 
 </div>
@@ -112,50 +98,65 @@ width:80px;
 let db = JSON.parse(localStorage.getItem("db")) || []
 
 function login(){
-let p = document.getElementById("pass").value
+let p=document.getElementById("pass").value
 if(p==="12345"){
-document.getElementById("loginBox").style.display="none"
-document.getElementById("app").style.display="block"
+loginBox.style.display="none"
+app.style.display="block"
 render()
-}else{
-alert("Password salah bro")
+}else alert("Password salah bro")
 }
+
+// AUTO NOMOR SERVICE
+function getNextNo(){
+let last = localStorage.getItem("noService") || 0
+last++
+localStorage.setItem("noService", last)
+return "SRV-"+String(last).padStart(4,"0")
 }
 
 function simpan(){
-let nama=document.getElementById("nama").value
-let barang=document.getElementById("barang").value
-let ket=document.getElementById("ket").value
-let file=document.getElementById("foto").files[0]
+let nama=namaInput.value
+let barang=barangInput.value
+let ket=ketInput.value
+let file=foto.files[0]
 
 if(!nama||!barang){alert("Isi dulu bro");return}
 
+let no = getNextNo()
+let status="Proses"
+
 if(file){
 let reader=new FileReader()
-reader.onload=function(e){
-db.push({nama,barang,ket,foto:e.target.result})
-localStorage.setItem("db",JSON.stringify(db))
-render()
+reader.onload=e=>{
+db.push({no,nama,barang,ket,status,foto:e.target.result})
+save()
 }
 reader.readAsDataURL(file)
 }else{
-db.push({nama,barang,ket,foto:""})
-localStorage.setItem("db",JSON.stringify(db))
-render()
+db.push({no,nama,barang,ket,status,foto:""})
+save()
 }
 
-document.getElementById("nama").value=""
-document.getElementById("barang").value=""
-document.getElementById("ket").value=""
-document.getElementById("foto").value=""
+namaInput.value=""
+barangInput.value=""
+ketInput.value=""
+foto.value=""
+}
+
+function save(){
+localStorage.setItem("db",JSON.stringify(db))
+render()
 }
 
 function render(){
 let t=document.getElementById("tabel")
+
 t.innerHTML=`<tr>
+<th>No</th>
 <th>Nama</th>
 <th>Barang</th>
-<th>Keterangan</th>
+<th>Ket</th>
+<th>Status</th>
 <th>Foto</th>
 <th>Hapus</th>
 </tr>`
@@ -163,54 +164,56 @@ t.innerHTML=`<tr>
 db.forEach((d,i)=>{
 t.innerHTML+=`
 <tr>
+<td>${d.no}</td>
 <td>${d.nama}</td>
 <td>${d.barang}</td>
 <td>${d.ket}</td>
+<td>
+<select onchange="ubahStatus(${i},this.value)">
+<option ${d.status=="Proses"?"selected":""}>Proses</option>
+<option ${d.status=="Selesai"?"selected":""}>Selesai</option>
+</select>
+</td>
 <td>${d.foto?'<img src="'+d.foto+'" class="preview">':""}</td>
 <td><button onclick="hapus(${i})">❌</button></td>
 </tr>`
 })
 }
 
+function ubahStatus(i,val){
+db[i].status=val
+save()
+}
+
 function hapus(i){
-if(confirm("Hapus data bro?")){
+if(confirm("Hapus data?")){
 db.splice(i,1)
-localStorage.setItem("db",JSON.stringify(db))
-render()
+save()
 }
 }
 
-function printData(){
-window.print()
-}
+function printData(){window.print()}
 
-<!-- FIX EXPORT EXCEL -->
+// EXPORT EXCEL
 function downloadExcel(){
+if(db.length==0){alert("Data kosong");return}
 
-if(db.length===0){
-alert("Data masih kosong bro");
-return;
-}
-
-let csv = "NAMA CUSTOMER,BARANG,KETERANGAN\n";
-
+let csv="NO,NAMA,BARANG,KETERANGAN,STATUS\n"
 db.forEach(d=>{
-csv += `"${d.nama}","${d.barang}","${d.ket}"\n`;
-});
+csv+=`${d.no},"${d.nama}","${d.barang}","${d.ket}","${d.status}"\n`
+})
 
-let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-
-let link = document.createElement("a");
-link.href = URL.createObjectURL(blob);
-link.download = "Data_Service_Toko.csv";
-link.click();
-
-alert("Excel berhasil didownload 😎");
+let blob=new Blob([csv],{type:'text/csv'})
+let link=document.createElement("a")
+link.href=URL.createObjectURL(blob)
+link.download="Data_Service.csv"
+link.click()
 }
 </script>
 
 </body>
 </html>
+
 
 
 

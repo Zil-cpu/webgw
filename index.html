@@ -259,9 +259,24 @@ let lastCount = 0
 
 let lastCount = 0
 
+function suaraMasuk(){
+let msg = new SpeechSynthesisUtterance("Service masuk bos")
+msg.lang = "id-ID"
+msg.rate = 0.9
+msg.pitch = 1.2
+speechSynthesis.speak(msg)
+}
+
 dbFirebase.on("value", snap=>{
 db = snap.val() || []
 render()
+
+if(db.length > lastCount){
+suaraMasuk()
+}
+lastCount = db.length
+})
+
 
 if(db.length > lastCount){
 document.getElementById("notif").play()

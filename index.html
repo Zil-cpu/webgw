@@ -203,15 +203,17 @@ document.getElementById("beep").play();
 function render(){
 let html=`
 <tr>
-<th>Waktu</th>
-<th>Foto</th>
-<th>Barang</th>
-<th>SN</th>
-<th>Keterangan</th>
-<th>Status</th>
-
-<th>Hapus</th>
+<td>${d.waktu}</td>
+<td>${d.foto?'<img src="'+d.foto+'" width="60">':""}</td>
+<td>${d.nama}</td>
+<td>${d.sn}</td>
+<td>${d.ket || "-"}</td>
+<td>${d.status}</td>
+<td>
+<button onclick="hapus(${i})">Hapus</button>
+</td>
 </tr>`;
+
 
 data.forEach((d,i)=>{
 html+=`

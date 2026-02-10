@@ -240,6 +240,7 @@ html+=`
 <td>${d.ket || "-"}</td>
 <td>${d.status}</td>
 <td>
+<button onclick="print1(${i})">Print</button>
 <button onclick="hapus(${i})">Hapus</button>
 </td>
 </tr>`;
@@ -313,6 +314,42 @@ document.getElementById("reader").innerHTML="";
 );
 }
 
+function print1(i){
+let d = data[i];
+
+let win = window.open("", "", "width=400,height=600");
+
+win.document.write(`
+<html>
+<head>
+<title>Struk Service</title>
+<style>
+body{font-family:Arial;padding:20px}
+h2{text-align:center}
+</style>
+</head>
+<body>
+
+<h2>Sains Quality Service Center</h2>
+<hr>
+
+<p><b>Waktu:</b><br>${d.waktu}</p>
+<p><b>Nama Barang:</b><br>${d.nama}</p>
+<p><b>Serial Number:</b><br>${d.sn}</p>
+<p><b>Keterangan:</b><br>${d.ket}</p>
+<p><b>Status:</b><br>${d.status}</p>
+
+<br><br>
+<p>Terima kasih sudah service 🙏</p>
+
+</body>
+</html>
+`);
+
+win.print();
+}
+
+  
 </script>
 </body>
 </html>

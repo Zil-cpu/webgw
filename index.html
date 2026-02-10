@@ -144,6 +144,7 @@ let data = JSON.parse(localStorage.getItem("dataService")) || [];
 // LOGIN
 function login(){
 let p=document.getElementById("pass").value;
+
 if(p==="12345"){
 document.getElementById("loginPage").style.display="none";
 document.getElementById("app").style.display="block";
@@ -152,6 +153,7 @@ render();
 alert("Password salah");
 }
 }
+
 
 // JAM
 function jam(){
@@ -385,8 +387,8 @@ bukan tanggung jawab kami
 
 <script>
 window.print();
-</script>
 
+</script>
 </body>
 </html>
 

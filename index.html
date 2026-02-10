@@ -162,46 +162,76 @@ setInterval(jam,1000);
 // TAMBAH
 function tambah(){
 
-let nama=document.getElementById("nama").value;
-let sn=document.getElementById("sn").value;
+let nama = document.getElementById("nama").value;
+let sn = document.getElementById("sn").value;
 let ket = document.getElementById("ket").value;
-let status=document.getElementById("status").value;
-let file=document.getElementById("foto").files[0];
+let status = document.getElementById("status").value;
+let fileInput = document.getElementById("foto");
+let file = fileInput.files[0];
 
 if(nama.trim()==""){
 alert("Isi nama barang dulu bro");
 return;
 }
 
-let waktu=new Date().toLocaleString();
+let waktu = new Date().toLocaleString();
 
+// ADA FOTO
 if(file){
-let reader=new FileReader();
-reader.onload=function(e){
-simpanData(e.target.result);
-}
-reader.readAsDataURL(file);
-}else{
-simpanData("");
-}
+let reader = new FileReader();
 
-function simpanData(foto64){
+reader.onload = function(e){
+let foto = e.target.result;
+
 data.push({
 waktu:waktu,
-foto:foto64,
+foto:foto,
 nama:nama,
 sn:sn,
+ket:ket,
 status:status
 });
-localStorage.setItem("dataService",JSON.stringify(data));
+
+localStorage.setItem("dataService", JSON.stringify(data));
+render();
+document.getElementById("beep").play();
+}
+
+reader.readAsDataURL(file);
+
+}else{
+// TANPA FOTO
+data.push({
+waktu:waktu,
+foto:"",
+nama:nama,
+sn:sn,
+ket:ket,
+status:status
+});
+
+localStorage.setItem("dataService", JSON.stringify(data));
 render();
 document.getElementById("beep").play();
 }
 }
 
+
 // RENDER
 function render(){
 let html=`
+<tr>
+<th>Waktu</th>
+<th>Foto</th>
+<th>Barang</th>
+<th>SN</th>
+<th>Keterangan</th>
+<th>Status</th>
+<th>Aksi</th>
+</tr>`;
+
+data.forEach((d,i)=>{
+html+=`
 <tr>
 <td>${d.waktu}</td>
 <td>${d.foto?'<img src="'+d.foto+'" width="60">':""}</td>
@@ -213,22 +243,11 @@ let html=`
 <button onclick="hapus(${i})">Hapus</button>
 </td>
 </tr>`;
-
-
-data.forEach((d,i)=>{
-html+=`
-<tr>
-<td>${d.waktu}</td>
-<td>${d.foto?'<img src="'+d.foto+'" width="60">':""}</td>
-<td>${d.nama}</td>
-<td>${d.sn}</td>
-<td>${d.status}</td>
-<td><button onclick="hapus(${i})">X</button></td>
-</tr>`;
 });
 
 document.getElementById("tabel").innerHTML=html;
 }
+
 
 // HAPUS
 function hapus(i){
@@ -315,8 +334,7 @@ document.getElementById("reader").innerHTML="";
 
 
 
-</body>
-</html>
+
 
 
 

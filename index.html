@@ -87,6 +87,16 @@ img.preview{width:70px;}
 </div>
 
 <script>
+function updateJam(){
+let now = new Date()
+let tgl = now.toLocaleDateString("id-ID")
+let jam = now.toLocaleTimeString("id-ID")
+document.getElementById("jam").innerHTML =
+"🕒 "+tgl+" | "+jam
+}
+setInterval(updateJam,1000)
+updateJam()
+
 let db = JSON.parse(localStorage.getItem("db")) || []
 
 function login(){
@@ -252,18 +262,6 @@ function save(){
 dbFirebase.set(db)
 }
 </script>
-
-function updateJam(){
-let now = new Date()
-let tgl = now.toLocaleDateString("id-ID")
-let jam = now.toLocaleTimeString("id-ID")
-document.getElementById("jam").innerHTML =
-"🕒 "+tgl+" | "+jam
-}
-setInterval(updateJam,1000)
-updateJam()
-
-let db = JSON.parse(localStorage.getItem("db")) || []
 
 </body>
 </html>

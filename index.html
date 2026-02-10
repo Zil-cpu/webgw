@@ -105,6 +105,7 @@ Sains Quality Service Center
 
 <input id="nama" placeholder="Nama Barang">
 <input id="sn" placeholder="Serial Number">
+<input id="ket" placeholder="Keterangan / Keluhan">
 
 <!-- FOTO HP -->
 <input type="file" id="foto" accept="image/*" capture="environment">
@@ -163,6 +164,7 @@ function tambah(){
 
 let nama=document.getElementById("nama").value;
 let sn=document.getElementById("sn").value;
+let ket = document.getElementById("ket").value;
 let status=document.getElementById("status").value;
 let file=document.getElementById("foto").files[0];
 
@@ -205,7 +207,9 @@ let html=`
 <th>Foto</th>
 <th>Barang</th>
 <th>SN</th>
+<th>Keterangan</th>
 <th>Status</th>
+
 <th>Hapus</th>
 </tr>`;
 

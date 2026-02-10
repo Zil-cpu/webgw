@@ -39,7 +39,6 @@ border:none;
 font-weight:bold;
 cursor:pointer;
 }
-
 button:hover{background:#0b7dda;}
 
 table{
@@ -106,7 +105,7 @@ render()
 }else alert("Password salah bro")
 }
 
-// AUTO NOMOR SERVICE
+// AUTO NOMOR
 function getNextNo(){
 let last = localStorage.getItem("noService") || 0
 last++
@@ -115,19 +114,19 @@ return "SRV-"+String(last).padStart(4,"0")
 }
 
 function simpan(){
-let nama=namaInput.value
-let barang=barangInput.value
-let ket=ketInput.value
-let file=foto.files[0]
+let nama=document.getElementById("nama").value
+let barang=document.getElementById("barang").value
+let ket=document.getElementById("ket").value
+let file=document.getElementById("foto").files[0]
 
 if(!nama||!barang){alert("Isi dulu bro");return}
 
-let no = getNextNo()
+let no=getNextNo()
 let status="Proses"
 
 if(file){
 let reader=new FileReader()
-reader.onload=e=>{
+reader.onload=function(e){
 db.push({no,nama,barang,ket,status,foto:e.target.result})
 save()
 }
@@ -137,10 +136,10 @@ db.push({no,nama,barang,ket,status,foto:""})
 save()
 }
 
-namaInput.value=""
-barangInput.value=""
-ketInput.value=""
-foto.value=""
+document.getElementById("nama").value=""
+document.getElementById("barang").value=""
+document.getElementById("ket").value=""
+document.getElementById("foto").value=""
 }
 
 function save(){
@@ -155,7 +154,7 @@ t.innerHTML=`<tr>
 <th>No</th>
 <th>Nama</th>
 <th>Barang</th>
-<th>Ket</th>
+<th>Keterangan</th>
 <th>Status</th>
 <th>Foto</th>
 <th>Hapus</th>
@@ -194,7 +193,6 @@ save()
 
 function printData(){window.print()}
 
-// EXPORT EXCEL
 function downloadExcel(){
 if(db.length==0){alert("Data kosong");return}
 
@@ -213,6 +211,7 @@ link.click()
 
 </body>
 </html>
+
 
 
 

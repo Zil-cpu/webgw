@@ -88,6 +88,7 @@ width:80px;
 <input type="file" id="foto" accept="image/*">
 
 <button onclick="simpan()">💾 SIMPAN</button>
+<button onclick="download()">DOWNLOAD EXCEL</button>
 <button onclick="printData()">🖨 PRINT DATA</button>
 </div>
 
@@ -181,6 +182,54 @@ render()
 function printData(){
 window.print()
 }
+
+// EXPORT EXCEL TOKO
+function download(){
+
+if(data.length==0){
+alert("Belum ada data bro");
+return;
+}
+
+let excel = `
+<table border="1">
+<tr>
+<th colspan="6" style="font-size:18px">
+SAINS QUALITY SERVICE CENTER
+</th>
+</tr>
+
+<tr>
+<th>Waktu</th>
+<th>Barang</th>
+<th>SN</th>
+<th>Keterangan</th>
+<th>Status</th>
+</tr>
+`;
+
+data.forEach(d=>{
+excel+=`
+<tr>
+<td>${d.waktu}</td>
+<td>${d.nama}</td>
+<td>${d.sn}</td>
+<td>${d.ket}</td>
+<td>${d.status}</td>
+</tr>
+`;
+});
+
+excel+=`</table>`;
+
+let blob = new Blob([excel], {type:"application/vnd.ms-excel"});
+let a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = "Laporan_Service_Toko.xls";
+a.click();
+}
+
+  
 </script>
 
 </body>

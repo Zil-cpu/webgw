@@ -58,7 +58,10 @@ img.preview{width:70px;}
 <h2>🔧 Sains Quality Service Center</h2>
 <div id="jam" style="font-size:20px;margin-bottom:10px;"></div>
 
-
+<audio id="notif">
+<source src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" type="audio/ogg">
+</audio>
+  
 <div class="box" id="loginBox">
 <h3>LOGIN TOKO</h3>
 <input type="password" id="pass" placeholder="Password">
@@ -252,10 +255,18 @@ firebase.initializeApp(firebaseConfig);
 const dbFirebase = firebase.database().ref("service");
 
 // LOAD DATA REALTIME
+let lastCount = 0
+
 dbFirebase.on("value", snap=>{
 db = snap.val() || []
 render()
+
+if(db.length > lastCount){
+document.getElementById("notif").play()
+}
+lastCount = db.length
 })
+
 
 // SAVE CLOUD
 function save(){

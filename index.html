@@ -221,6 +221,35 @@ link.download="Data_Service.csv"
 link.click()
 }
 </script>
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAvcZ5LkYy9mma922l85ahDEXeLVUpac-E",
+  authDomain: "toko-service-45cc5.firebaseapp.com",
+  databaseURL: "https://toko-service-45cc5-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "toko-service-45cc5",
+  storageBucket: "toko-service-45cc5.firebasestorage.app",
+  messagingSenderId: "356855373841",
+  appId: "1:356855373841:web:c9749edbd59796685611b0"
+};
+
+firebase.initializeApp(firebaseConfig);
+const dbFirebase = firebase.database().ref("service");
+
+// LOAD DATA REALTIME
+dbFirebase.on("value", snap=>{
+db = snap.val() || []
+render()
+})
+
+// SAVE CLOUD
+function save(){
+dbFirebase.set(db)
+}
+</script>
 
 </body>
 </html>

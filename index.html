@@ -63,14 +63,12 @@ img.preview{width:70px;}
 
 <h2>🔧 Sains Quality Service Center</h2>
 
-<!-- LOGIN -->
 <div class="box" id="loginBox">
 <h3>LOGIN TOKO</h3>
 <input type="password" id="pass" placeholder="Password">
 <button onclick="login()">MASUK</button>
 </div>
 
-<!-- APP -->
 <div id="app" style="display:none">
 
 <div class="box">
@@ -78,12 +76,12 @@ img.preview{width:70px;}
 
 <input id="nama" placeholder="Nama Customer">
 <input id="barang" placeholder="Nama Barang">
-<input id="ket" placeholder="Keterangan">
+<input id="ket" placeholder="Keterangan / Keluhan">
 <input type="file" id="foto" accept="image/*">
 
 <button onclick="simpan()">💾 SIMPAN</button>
 <button onclick="downloadExcel()">📥 DOWNLOAD EXCEL</button>
-<button onclick="printData()">🖨 PRINT</button>
+<button onclick="printData()">🖨 PRINT DATA</button>
 </div>
 
 <div class="box">
@@ -105,7 +103,6 @@ render()
 }else alert("Password salah bro")
 }
 
-// AUTO NOMOR
 function getNextNo(){
 let last = localStorage.getItem("noService") || 0
 last++
@@ -123,23 +120,26 @@ if(!nama||!barang){alert("Isi dulu bro");return}
 
 let no=getNextNo()
 let status="Proses"
+let waktu=new Date().toLocaleString()
 
 if(file){
 let reader=new FileReader()
 reader.onload=function(e){
-db.push({no,nama,barang,ket,status,foto:e.target.result})
+db.push({no,nama,barang,ket,status,waktu,foto:e.target.result})
 save()
+printStruk({no,nama,barang,ket,status,waktu})
 }
 reader.readAsDataURL(file)
 }else{
-db.push({no,nama,barang,ket,status,foto:""})
+db.push({no,nama,barang,ket,status,waktu,foto:""})
 save()
+printStruk({no,nama,barang,ket,status,waktu})
 }
 
-document.getElementById("nama").value=""
-document.getElementById("barang").value=""
-document.getElementById("ket").value=""
-document.getElementById("foto").value=""
+nama.value=""
+barang.value=""
+ket.value=""
+foto.value=""
 }
 
 function save(){
@@ -154,9 +154,8 @@ t.innerHTML=`<tr>
 <th>No</th>
 <th>Nama</th>
 <th>Barang</th>
-<th>Keterangan</th>
 <th>Status</th>
-<th>Foto</th>
+<th>Cetak</th>
 <th>Hapus</th>
 </tr>`
 
@@ -166,51 +165,11 @@ t.innerHTML+=`
 <td>${d.no}</td>
 <td>${d.nama}</td>
 <td>${d.barang}</td>
-<td>${d.ket}</td>
 <td>
 <select onchange="ubahStatus(${i},this.value)">
 <option ${d.status=="Proses"?"selected":""}>Proses</option>
-<option ${d.status=="Selesai"?"selected":""}>Selesai</option>
-</select>
-</td>
-<td>${d.foto?'<img src="'+d.foto+'" class="preview">':""}</td>
-<td><button onclick="hapus(${i})">❌</button></td>
-</tr>`
-})
-}
+<option ${d.status=="Selesai"?"selected":"
 
-function ubahStatus(i,val){
-db[i].status=val
-save()
-}
-
-function hapus(i){
-if(confirm("Hapus data?")){
-db.splice(i,1)
-save()
-}
-}
-
-function printData(){window.print()}
-
-function downloadExcel(){
-if(db.length==0){alert("Data kosong");return}
-
-let csv="NO,NAMA,BARANG,KETERANGAN,STATUS\n"
-db.forEach(d=>{
-csv+=`${d.no},"${d.nama}","${d.barang}","${d.ket}","${d.status}"\n`
-})
-
-let blob=new Blob([csv],{type:'text/csv'})
-let link=document.createElement("a")
-link.href=URL.createObjectURL(blob)
-link.download="Data_Service.csv"
-link.click()
-}
-</script>
-
-</body>
-</html>
 
 
 

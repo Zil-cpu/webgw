@@ -88,7 +88,7 @@ width:80px;
 <input type="file" id="foto" accept="image/*">
 
 <button onclick="simpan()">💾 SIMPAN</button>
-<button onclick="download()">DOWNLOAD EXCEL</button>
+<button onclick="downloadExcel()">DOWNLOAD EXCEL</button>
 <button onclick="printData()">🖨 PRINT DATA</button>
 </div>
 
@@ -184,50 +184,30 @@ window.print()
 }
 
 // EXPORT EXCEL TOKO
-function download(){
+// ================= EXPORT EXCEL TOKO =================
+function downloadExcel(){
 
-if(data.length==0){
-alert("Belum ada data bro");
+if(!data || data.length===0){
+alert("Data masih kosong bro");
 return;
 }
 
-let excel = `
-<table border="1">
-<tr>
-<th colspan="6" style="font-size:18px">
-SAINS QUALITY SERVICE CENTER
-</th>
-</tr>
-
-<tr>
-<th>Waktu</th>
-<th>Barang</th>
-<th>SN</th>
-<th>Keterangan</th>
-<th>Status</th>
-</tr>
-`;
+let csv = "WAKTU,BARANG,SN,KETERANGAN,STATUS\n";
 
 data.forEach(d=>{
-excel+=`
-<tr>
-<td>${d.waktu}</td>
-<td>${d.nama}</td>
-<td>${d.sn}</td>
-<td>${d.ket}</td>
-<td>${d.status}</td>
-</tr>
-`;
+csv += `"${d.waktu}","${d.nama}","${d.sn}","${d.ket}","${d.status}"\n`;
 });
 
-excel+=`</table>`;
+let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 
-let blob = new Blob([excel], {type:"application/vnd.ms-excel"});
-let a = document.createElement("a");
-a.href = URL.createObjectURL(blob);
-a.download = "Laporan_Service_Toko.xls";
-a.click();
+let link = document.createElement("a");
+link.href = URL.createObjectURL(blob);
+link.download = "Data_Service_Toko.csv";
+link.click();
+
+alert("Excel berhasil didownload bro 😎");
 }
+
 
   
 </script>

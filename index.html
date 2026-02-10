@@ -56,6 +56,8 @@ img.preview{width:70px;}
 <body>
 
 <h2>🔧 Sains Quality Service Center</h2>
+<div id="jam" style="font-size:20px;margin-bottom:10px;"></div>
+
 
 <div class="box" id="loginBox">
 <h3>LOGIN TOKO</h3>
@@ -250,6 +252,18 @@ function save(){
 dbFirebase.set(db)
 }
 </script>
+
+function updateJam(){
+let now = new Date()
+let tgl = now.toLocaleDateString("id-ID")
+let jam = now.toLocaleTimeString("id-ID")
+document.getElementById("jam").innerHTML =
+"🕒 "+tgl+" | "+jam
+}
+setInterval(updateJam,1000)
+updateJam()
+
+let db = JSON.parse(localStorage.getItem("db")) || []
 
 </body>
 </html>

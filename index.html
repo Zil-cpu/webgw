@@ -257,9 +257,18 @@ const dbFirebase = firebase.database().ref("service");
 // LOAD DATA REALTIME
 let lastCount = 0
 
+let lastCount = 0
+
 dbFirebase.on("value", snap=>{
 db = snap.val() || []
 render()
+
+if(db.length > lastCount){
+document.getElementById("notif").play()
+}
+lastCount = db.length
+})
+
 
 if(db.length > lastCount){
 document.getElementById("notif").play()

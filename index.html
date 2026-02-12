@@ -142,8 +142,8 @@ localStorage.setItem("service_no",last);
 return "SRV-"+String(last).padStart(4,'0');
 }
 
-// SIMPAN
-function simpan(){
+
+// SIMPAN DATA
 // SIMPAN DATA
 function simpan(){
 let no=document.getElementById("no_service").value;
@@ -169,9 +169,9 @@ document.getElementById("barang").value="";
 document.getElementById("keluhan").value="";
 document.getElementById("biaya").value="";
 
-// nomor baru
 document.getElementById("no_service").value = generateNoService();
 }
+
 
 
 

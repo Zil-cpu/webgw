@@ -224,7 +224,7 @@ win.document.write(`
 <tr><td>Barang</td><td>: ${d.barang}</td></tr>
 <tr><td>Keluhan</td><td>: ${d.ket}</td></tr>
 <tr><td>Status</td><td>: <b style="color:${d.status=='Selesai'?'green':'orange'}">${d.status}</b></td></tr>
-<tr><td>Tanggal</td><td>: ${d.waktu}</td></tr>
+<tr><td>Tanggal</td><td>: ${d.waktu ? d.waktu : new Date().toLocaleString()}</td></tr>
 </table>
 
 <hr>

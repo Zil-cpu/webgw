@@ -80,6 +80,7 @@ margin-bottom:10px;
 
 <h2>📋 INPUT SERVICE</h2>
 
+<input type="text" id="no_service" placeholder="No Service" readonly><br>
 <input type="text" id="nama" placeholder="Nama Customer"><br>
 <input type="text" id="barang" placeholder="Nama Barang"><br>
 <input type="text" id="keluhan" placeholder="Keluhan"><br>
@@ -128,6 +129,8 @@ return now.toLocaleString();
 }
 
 function simpan(){
+function simpan(){
+let no=document.getElementById("no_service").value;
 let nama=document.getElementById("nama").value;
 let barang=document.getElementById("barang").value;
 let keluhan=document.getElementById("keluhan").value;
@@ -138,15 +141,20 @@ if(nama==""){alert("Isi nama");return;}
 
 let data=JSON.parse(localStorage.getItem("service")||"[]");
 
-data.push({jam,nama,barang,keluhan,status});
+data.push({no,jam,nama,barang,keluhan,status});
 localStorage.setItem("service",JSON.stringify(data));
 
 loadData();
 
+// reset input
 document.getElementById("nama").value="";
 document.getElementById("barang").value="";
 document.getElementById("keluhan").value="";
+
+// nomor baru
+document.getElementById("no_service").value = generateNoService();
 }
+
 
 function loadData(){
 let data=JSON.parse(localStorage.getItem("service")||"[]");
@@ -201,6 +209,28 @@ win.print();
 }
 
 </script>
+
+<!-- SCRIPT AUTO NOMOR SERVICE -->
+<script>
+function generateNoService() {
+    let lastNo = localStorage.getItem("service_no");
+
+    if (lastNo) {
+        lastNo = parseInt(lastNo) + 1;
+    } else {
+        lastNo = 1;
+    }
+
+    localStorage.setItem("service_no", lastNo);
+
+    return String(lastNo).padStart(3,'0');
+}
+
+window.onload = function(){
+    document.getElementById("no_service").value = generateNoService();
+};
+</script>
+
 </body>
 </html>
 

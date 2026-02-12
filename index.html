@@ -200,27 +200,45 @@ save()
 
 // print struk
 function printStruk(d){
-let win=window.open("","","width=300,height=600")
+let win=window.open("","","width=350,height=600")
 win.document.write(`
 <html>
-<body style="font-family:monospace;text-align:center">
+<head>
+<title>Struk Service</title>
+</head>
 
-<img src="logo.png" style="width:120px"><br>
+<body style="font-family:Arial;background:#f5f5f5;padding:10px">
 
-<b>SAINS QUALITY SERVICE CENTER</b><br>
-Service & Computer<hr>
+<div style="max-width:320px;margin:auto;background:white;padding:15px;border-radius:10px;border:2px dashed black">
 
-No: <b>${d.no}</b><br><br>
-Nama: ${d.nama}<br>
-Barang: ${d.barang}<br>
-Keluhan: ${d.ket}<br>
-Status: ${d.status}<br>
-Tanggal: ${d.waktu}<br>
+<div style="text-align:center">
+<img src="logo.png" style="width:140px"><br>
+<b style="font-size:18px;color:#0b5394">SAINS QUALITY</b><br>
+<span style="font-size:13px">Computer & Service</span>
+<hr>
+</div>
+
+<table style="width:100%;font-size:14px">
+<tr><td>No Service</td><td>: <b>${d.no}</b></td></tr>
+<tr><td>Nama</td><td>: ${d.nama}</td></tr>
+<tr><td>Barang</td><td>: ${d.barang}</td></tr>
+<tr><td>Keluhan</td><td>: ${d.ket}</td></tr>
+<tr><td>Status</td><td>: <b style="color:${d.status=='Selesai'?'green':'orange'}">${d.status}</b></td></tr>
+<tr><td>Tanggal</td><td>: ${d.waktu}</td></tr>
+</table>
 
 <hr>
+
+<div style="text-align:center;font-size:13px">
 Terima kasih 🙏<br>
+Servis Bergaransi<br>
 WA: 085692459331
-</body></html>
+</div>
+
+</div>
+
+</body>
+</html>
 `)
 win.document.close()
 win.print()

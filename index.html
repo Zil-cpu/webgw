@@ -10,7 +10,6 @@
 <style>
 body{
 font-family:Arial;
-background:#0f2027;
 background:linear-gradient(to right,#2c5364,#203a43,#0f2027);
 color:#fff;
 text-align:center;
@@ -44,24 +43,21 @@ color:#fff;
 cursor:pointer;
 }
 
-button:hover{
-background:#203a43;
-}
+button:hover{background:#203a43;}
 
 #dashboard{display:none}
+
 table{
 width:95%;
 margin:auto;
 background:#fff;
 color:#000;
 border-collapse:collapse;
+margin-top:20px;
 }
 td,th{padding:8px;border:1px solid #ccc}
 
-.logo{
-width:180px;
-margin-bottom:10px;
-}
+.logo{width:160px;margin-bottom:10px;}
 </style>
 </head>
 
@@ -80,7 +76,7 @@ margin-bottom:10px;
 
 <h2>📋 INPUT SERVICE</h2>
 
-<input type="text" id="no_service" placeholder="No Service" readonly><br>
+<input type="text" id="no_service" readonly placeholder="No Service"><br>
 <input type="text" id="nama" placeholder="Nama Customer"><br>
 <input type="text" id="barang" placeholder="Nama Barang"><br>
 <input type="text" id="keluhan" placeholder="Keluhan"><br>
@@ -93,18 +89,19 @@ margin-bottom:10px;
 </select><br>
 
 <button onclick="simpan()">💾 Simpan</button>
-<button onclick="exportExcel()">📊 Export Excel</button>
-<button onclick="printStruk()">🧾 Print</button>
+<button onclick="exportExcel()">📊 Excel</button>
 
 <h3>📦 Data Service</h3>
 
 <table id="tabel">
 <tr>
+<th>No</th>
 <th>Jam</th>
 <th>Nama</th>
 <th>Barang</th>
 <th>Keluhan</th>
 <th>Status</th>
+<th>Struk</th>
 </tr>
 </table>
 
@@ -117,18 +114,34 @@ let p=document.getElementById("pass").value;
 if(p=="12345"){
 document.getElementById("loginBox").style.display="none";
 document.getElementById("dashboard").style.display="block";
+document.getElementById("no_service").value = generateNoService();
 loadData();
 }else{
 alert("Password salah");
 }
 }
 
+// waktu
 function waktu(){
 let now=new Date();
-return now.toLocaleString();
+return now.toLocaleString("id-ID");
 }
 
-function simpan(){
+// AUTO NOMOR
+function generateNoService(){
+let last = localStorage.getItem("service_no");
+
+if(last){
+last=parseInt(last)+1;
+}else{
+last=1;
+}
+
+localStorage.setItem("service_no",last);
+return "SRV-"+String(last).padStart(4,'0');
+}
+
+// SIMPAN
 function simpan(){
 let no=document.getElementById("no_service").value;
 let nama=document.getElementById("nama").value;
@@ -137,7 +150,7 @@ let keluhan=document.getElementById("keluhan").value;
 let status=document.getElementById("status").value;
 let jam=waktu();
 
-if(nama==""){alert("Isi nama");return;}
+if(nama==""){alert("Isi nama bro");return;}
 
 let data=JSON.parse(localStorage.getItem("service")||"[]");
 
@@ -146,39 +159,71 @@ localStorage.setItem("service",JSON.stringify(data));
 
 loadData();
 
-// reset input
+// reset
 document.getElementById("nama").value="";
 document.getElementById("barang").value="";
 document.getElementById("keluhan").value="";
-
-// nomor baru
 document.getElementById("no_service").value = generateNoService();
 }
 
-
+// LOAD DATA
 function loadData(){
 let data=JSON.parse(localStorage.getItem("service")||"[]");
+
 let html=`<tr>
+<th>No</th>
 <th>Jam</th>
 <th>Nama</th>
 <th>Barang</th>
 <th>Keluhan</th>
 <th>Status</th>
+<th>Struk</th>
 </tr>`;
 
 data.forEach(d=>{
 html+=`<tr>
+<td>${d.no}</td>
 <td>${d.jam}</td>
 <td>${d.nama}</td>
 <td>${d.barang}</td>
 <td>${d.keluhan}</td>
 <td>${d.status}</td>
+<td><button onclick='printStruk(${JSON.stringify(d)})'>🧾</button></td>
 </tr>`;
 });
 
 document.getElementById("tabel").innerHTML=html;
 }
 
+// PRINT STRUK
+function printStruk(d){
+let win=window.open("","","width=350,height=600");
+
+win.document.write(`
+<center>
+<img src="logo.png" width="150"><br>
+<b style="font-size:18px">SAINS QUALITY SERVICE</b><br>
+Computer & Service<hr>
+
+No: <b>${d.no}</b><br>
+${d.jam}<hr>
+
+Nama: ${d.nama}<br>
+Barang: ${d.barang}<br>
+Keluhan: ${d.keluhan}<br>
+Status: <b>${d.status}</b><br>
+
+<hr>
+Terima kasih 🙏<br>
+Garansi Service
+</center>
+`);
+
+win.document.close();
+win.print();
+}
+
+// EXCEL
 function exportExcel(){
 let data=JSON.parse(localStorage.getItem("service")||"[]");
 let ws=XLSX.utils.json_to_sheet(data);
@@ -187,60 +232,7 @@ XLSX.utils.book_append_sheet(wb,ws,"Service");
 XLSX.writeFile(wb,"data_service.xlsx");
 }
 
-function printStruk(){
-let nama=document.getElementById("nama").value;
-let barang=document.getElementById("barang").value;
-let keluhan=document.getElementById("keluhan").value;
-let jam=waktu();
-
-let win=window.open("");
-win.document.write(`
-<center>
-<img src="https://i.imgur.com/8Km9tLL.png" width="200"><br>
-<h3>Sains Quality Computer</h3>
-${jam}<hr>
-Nama: ${nama}<br>
-Barang: ${barang}<br>
-Keluhan: ${keluhan}<br>
-<hr>Terima kasih
-</center>
-`);
-win.print();
-}
-
 </script>
-
-<!-- SCRIPT AUTO NOMOR SERVICE -->
-<script>
-function generateNoService() {
-    let lastNo = localStorage.getItem("service_no");
-
-    if (lastNo) {
-        lastNo = parseInt(lastNo) + 1;
-    } else {
-        lastNo = 1;
-    }
-
-    localStorage.setItem("service_no", lastNo);
-
-    return String(lastNo).padStart(3,'0');
-}
-
-window.onload = function(){
-    document.getElementById("no_service").value = generateNoService();
-};
-</script>
-
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
 

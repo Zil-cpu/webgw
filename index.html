@@ -78,6 +78,13 @@ img.preview{width:70px;}
 <input id="ket" placeholder="Keluhan">
 <input id="biaya" placeholder="Biaya Service (Rp)">
 <input type="file" id="foto" accept="image/*">
+  
+<select id="status">
+<option value="Proses">Proses</option>
+<option value="Selesai">Selesai</option>
+</select>
+
+
 
 <button onclick="simpan()">💾 SIMPAN</button>
 <button onclick="downloadExcel()">📥 EXCEL</button>
@@ -130,7 +137,7 @@ let file=document.getElementById("foto").files[0]
 if(!nama||!barang){alert("Isi dulu bro");return}
 
 let no=getNextNo()
-let status="Proses"
+let status=document.getElementById("status").value
 let waktu=new Date().toLocaleString()
 
 if(file){
@@ -149,6 +156,8 @@ document.getElementById("nama").value=""
 document.getElementById("barang").value=""
 document.getElementById("ket").value=""
 document.getElementById("foto").value=""
+document.getElementById("status").value="Proses"
+
 }
 
 function save(){

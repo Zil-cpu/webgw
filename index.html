@@ -1,154 +1,209 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sains Quality Service Center</title>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 <style>
 body{
 font-family:Arial;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-color:white;
+background:#0f2027;
+background:linear-gradient(to right,#2c5364,#203a43,#0f2027);
+color:#fff;
 text-align:center;
-margin:0;
-padding:0;
 }
+
 .box{
-background:white;
-color:black;
+background:#fff;
+color:#000;
+width:350px;
+margin:40px auto;
 padding:20px;
-margin:20px;
-border-radius:15px;
+border-radius:12px;
+box-shadow:0 0 15px rgba(0,0,0,0.4);
 }
-input,button,select{
-padding:12px;
-margin:5px;
+
+input,select{
 width:90%;
-border-radius:10px;
+padding:10px;
+margin:5px;
+border-radius:6px;
 border:1px solid #ccc;
-font-size:16px;
 }
+
 button{
-background:#2196f3;
-color:white;
+padding:10px 20px;
+margin:5px;
 border:none;
-font-weight:bold;
+border-radius:6px;
+background:#2c5364;
+color:#fff;
 cursor:pointer;
 }
-table{
-width:100%;
-background:white;
-color:black;
-margin-top:20px;
+
+button:hover{
+background:#203a43;
 }
-td,th{
-padding:10px;
-border-bottom:1px solid #ddd;
+
+#dashboard{display:none}
+table{
+width:95%;
+margin:auto;
+background:#fff;
+color:#000;
+border-collapse:collapse;
+}
+td,th{padding:8px;border:1px solid #ccc}
+
+.logo{
+width:180px;
+margin-bottom:10px;
 }
 </style>
-
 </head>
 
 <body>
 
-<h2>🔧 Sains Quality Service Center</h2>
-<div id="jam"></div>
-
+<!-- LOGIN -->
 <div class="box" id="loginBox">
-<h3>LOGIN TOKO</h3>
+<h2>🔧 Sains Quality Service Center</h2>
 <input type="password" id="pass" placeholder="Password">
+<br>
 <button onclick="login()">MASUK</button>
 </div>
 
-<div id="app" style="display:none">
+<!-- DASHBOARD -->
+<div id="dashboard">
 
-<div class="box">
-<h3>INPUT SERVICE</h3>
+<h2>📋 INPUT SERVICE</h2>
 
-<input id="nama" placeholder="Nama Customer">
-<input id="barang" placeholder="Nama Barang">
-<input id="ket" placeholder="Keluhan">
+<input type="text" id="nama" placeholder="Nama Customer"><br>
+<input type="text" id="barang" placeholder="Nama Barang"><br>
+<input type="text" id="keluhan" placeholder="Keluhan"><br>
 
 <select id="status">
+<option>Masuk</option>
 <option>Proses</option>
 <option>Selesai</option>
-</select>
+<option>Diambil</option>
+</select><br>
 
-<button onclick="simpan()">💾 SIMPAN</button>
+<button onclick="simpan()">💾 Simpan</button>
+<button onclick="exportExcel()">📊 Export Excel</button>
+<button onclick="printStruk()">🧾 Print</button>
 
-</div>
+<h3>📦 Data Service</h3>
 
-<div class="box">
-<h3>DATA SERVICE</h3>
-<table id="tabel"></table>
-</div>
+<table id="tabel">
+<tr>
+<th>Jam</th>
+<th>Nama</th>
+<th>Barang</th>
+<th>Keluhan</th>
+<th>Status</th>
+</tr>
+</table>
 
 </div>
 
 <script>
-function updateJam(){
-let now=new Date()
-document.getElementById("jam").innerHTML=
-now.toLocaleDateString("id-ID")+" "+now.toLocaleTimeString("id-ID")
-}
-setInterval(updateJam,1000);updateJam()
-
-let db=[]
 
 function login(){
-let p=document.getElementById("pass").value.trim()
-if(p==="12345"){
-document.getElementById("loginBox").style.display="none"
-document.getElementById("app").style.display="block"
+let p=document.getElementById("pass").value;
+if(p=="12345"){
+document.getElementById("loginBox").style.display="none";
+document.getElementById("dashboard").style.display="block";
+loadData();
 }else{
-alert("Password salah bro")
+alert("Password salah");
 }
 }
 
-function getNextNo(){
-let n=localStorage.getItem("no")||0
-n++
-localStorage.setItem("no",n)
-return "SRV-"+String(n).padStart(4,"0")
+function waktu(){
+let now=new Date();
+return now.toLocaleString();
 }
 
 function simpan(){
-let nama=document.getElementById("nama").value
-let barang=document.getElementById("barang").value
-let ket=document.getElementById("ket").value
-let status=document.getElementById("status").value
+let nama=document.getElementById("nama").value;
+let barang=document.getElementById("barang").value;
+let keluhan=document.getElementById("keluhan").value;
+let status=document.getElementById("status").value;
+let jam=waktu();
 
-if(!nama||!barang){alert("Isi dulu");return}
+if(nama==""){alert("Isi nama");return;}
 
-let no=getNextNo()
-let waktu=new Date().toLocaleString()
+let data=JSON.parse(localStorage.getItem("service")||"[]");
 
-db.push({no,nama,barang,ket,status,waktu})
-render()
+data.push({jam,nama,barang,keluhan,status});
+localStorage.setItem("service",JSON.stringify(data));
 
-document.getElementById("nama").value=""
-document.getElementById("barang").value=""
-document.getElementById("ket").value=""
+loadData();
+
+document.getElementById("nama").value="";
+document.getElementById("barang").value="";
+document.getElementById("keluhan").value="";
 }
 
-function render(){
-let t=document.getElementById("tabel")
-t.innerHTML="<tr><th>No</th><th>Nama</th><th>Barang</th><th>Status</th></tr>"
-db.forEach(d=>{
-t.innerHTML+=`<tr>
-<td>${d.no}</td>
+function loadData(){
+let data=JSON.parse(localStorage.getItem("service")||"[]");
+let html=`<tr>
+<th>Jam</th>
+<th>Nama</th>
+<th>Barang</th>
+<th>Keluhan</th>
+<th>Status</th>
+</tr>`;
+
+data.forEach(d=>{
+html+=`<tr>
+<td>${d.jam}</td>
 <td>${d.nama}</td>
 <td>${d.barang}</td>
+<td>${d.keluhan}</td>
 <td>${d.status}</td>
-</tr>`
-})
-}
-</script>
+</tr>`;
+});
 
+document.getElementById("tabel").innerHTML=html;
+}
+
+function exportExcel(){
+let data=JSON.parse(localStorage.getItem("service")||"[]");
+let ws=XLSX.utils.json_to_sheet(data);
+let wb=XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb,ws,"Service");
+XLSX.writeFile(wb,"data_service.xlsx");
+}
+
+function printStruk(){
+let nama=document.getElementById("nama").value;
+let barang=document.getElementById("barang").value;
+let keluhan=document.getElementById("keluhan").value;
+let jam=waktu();
+
+let win=window.open("");
+win.document.write(`
+<center>
+<img src="https://i.imgur.com/8Km9tLL.png" width="200"><br>
+<h3>Sains Quality Computer</h3>
+${jam}<hr>
+Nama: ${nama}<br>
+Barang: ${barang}<br>
+Keluhan: ${keluhan}<br>
+<hr>Terima kasih
+</center>
+`);
+win.print();
+}
+
+</script>
 </body>
 </html>
+
 
 
 

@@ -204,21 +204,28 @@ let win=window.open("","","width=300,height=600")
 win.document.write(`
 <html>
 <body style="font-family:monospace;text-align:center">
-<h3>SAINS QUALITY</h3>
+
+<img src="https://i.postimg.cc/3x3QzSGq/logo.png" style="width:80px"><br>
+
+<b>SAINS QUALITY SERVICE</b><br>
 Service Center<hr>
+
 No: <b>${d.no}</b><br><br>
 Nama: ${d.nama}<br>
 Barang: ${d.barang}<br>
 Keluhan: ${d.ket}<br>
 Status: ${d.status}<br>
 Tanggal: ${d.waktu}<br>
+
 <hr>
-Terima kasih 🙏
+Terima kasih 🙏<br>
+WA: 08xxxxxxxx
 </body></html>
 `)
 win.document.close()
 win.print()
 }
+
 
 // excel
 function downloadExcel(){
@@ -236,6 +243,7 @@ link.download="Data_Service.csv"
 link.click()
 }
 </script>
+
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -254,16 +262,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const dbFirebase = firebase.database().ref("service");
 
-// LOAD DATA REALTIME
-let lastCount = 0
-
 let lastCount = 0
 
 function suaraMasuk(){
 let msg = new SpeechSynthesisUtterance("Service masuk bos")
-msg.lang = "id-ID"
-msg.rate = 0.9
-msg.pitch = 1.2
+msg.lang="id-ID"
+msg.rate=0.9
+msg.pitch=1.2
 speechSynthesis.speak(msg)
 }
 
@@ -277,26 +282,12 @@ suaraMasuk()
 lastCount = db.length
 })
 
-
-if(db.length > lastCount){
-document.getElementById("notif").play()
-}
-lastCount = db.length
-})
-
-
-if(db.length > lastCount){
-document.getElementById("notif").play()
-}
-lastCount = db.length
-})
-
-
 // SAVE CLOUD
 function save(){
 dbFirebase.set(db)
 }
 </script>
+
 
 </body>
 </html>

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 <head>
 <meta charset="UTF-8">
@@ -36,32 +37,25 @@ border:none;
 font-weight:bold;
 cursor:pointer;
 }
-button:hover{background:#0b7dda;}
 table{
 width:100%;
 background:white;
 color:black;
 margin-top:20px;
-border-radius:10px;
 }
 td,th{
 padding:10px;
 border-bottom:1px solid #ddd;
-font-size:14px;
 }
-img.preview{width:70px;}
 </style>
+
 </head>
 
 <body>
 
 <h2>🔧 Sains Quality Service Center</h2>
-<div id="jam" style="font-size:20px;margin-bottom:10px;"></div>
+<div id="jam"></div>
 
-<audio id="notif">
-<source src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" type="audio/ogg">
-</audio>
-  
 <div class="box" id="loginBox">
 <h3>LOGIN TOKO</h3>
 <input type="password" id="pass" placeholder="Password">
@@ -76,18 +70,13 @@ img.preview{width:70px;}
 <input id="nama" placeholder="Nama Customer">
 <input id="barang" placeholder="Nama Barang">
 <input id="ket" placeholder="Keluhan">
-<input id="biaya" placeholder="Biaya Service (Rp)">
-<input type="file" id="foto" accept="image/*">
-  
+
 <select id="status">
-<option value="Proses">Proses</option>
-<option value="Selesai">Selesai</option>
+<option>Proses</option>
+<option>Selesai</option>
 </select>
 
-
-
 <button onclick="simpan()">💾 SIMPAN</button>
-<button onclick="downloadExcel()">📥 EXCEL</button>
 
 </div>
 
@@ -100,251 +89,67 @@ img.preview{width:70px;}
 
 <script>
 function updateJam(){
-let now = new Date()
-let tgl = now.toLocaleDateString("id-ID")
-let jam = now.toLocaleTimeString("id-ID")
-document.getElementById("jam").innerHTML =
-"🕒 "+tgl+" | "+jam
+let now=new Date()
+document.getElementById("jam").innerHTML=
+now.toLocaleDateString("id-ID")+" "+now.toLocaleTimeString("id-ID")
 }
-setInterval(updateJam,1000)
-updateJam()
+setInterval(updateJam,1000);updateJam()
 
-let db = JSON.parse(localStorage.getItem("db")) || []
+let db=[]
 
 function login(){
-let p=document.getElementById("pass").value
+let p=document.getElementById("pass").value.trim()
 if(p==="12345"){
 document.getElementById("loginBox").style.display="none"
 document.getElementById("app").style.display="block"
-render()
-}else alert("Password salah")
+}else{
+alert("Password salah bro")
+}
 }
 
-// auto nomor
 function getNextNo(){
-let last = localStorage.getItem("noService") || 0
-last++
-localStorage.setItem("noService", last)
-return "SRV-"+String(last).padStart(4,"0")
+let n=localStorage.getItem("no")||0
+n++
+localStorage.setItem("no",n)
+return "SRV-"+String(n).padStart(4,"0")
 }
 
 function simpan(){
 let nama=document.getElementById("nama").value
 let barang=document.getElementById("barang").value
 let ket=document.getElementById("ket").value
-let biaya=document.getElementById("biaya").value
 let status=document.getElementById("status").value
-let file=document.getElementById("foto").files[0]
 
-if(!nama||!barang){
-alert("Isi dulu bro")
-return
-}
+if(!nama||!barang){alert("Isi dulu");return}
 
 let no=getNextNo()
 let waktu=new Date().toLocaleString()
 
-if(file){
-let reader=new FileReader()
-reader.onload=function(e){
-
-db.push({
-no:n o,
-nama:nama,
-barang:barang,
-ket:ket,
-biaya:biaya,
-status:status,
-waktu:waktu,
-foto:e.target.result
-})
-
-dbFirebase.set(db)   // ⬅️ SIMPAN CLOUD
-}
-reader.readAsDataURL(file)
-
-}else{
-
-db.push({
-no:no,
-nama:nama,
-barang:barang,
-ket:ket,
-biaya:biaya,
-status:status,
-waktu:waktu,
-foto:""
-})
-
-dbFirebase.set(db)   // ⬅️ SIMPAN CLOUD
-}
+db.push({no,nama,barang,ket,status,waktu})
+render()
 
 document.getElementById("nama").value=""
 document.getElementById("barang").value=""
 document.getElementById("ket").value=""
-document.getElementById("biaya").value=""
-document.getElementById("foto").value=""
-document.getElementById("status").value="Proses"
-
-alert("Tersimpan bos 😎")
 }
-
 
 function render(){
 let t=document.getElementById("tabel")
-
-t.innerHTML=`<tr>
-<th>No</th>
-<th>Nama</th>
-<th>Barang</th>
-<th>Status</th>
-<th>Foto</th>
-<th>Struk</th>
-<th>Hapus</th>
-</tr>`
-
-db.forEach((d,i)=>{
-t.innerHTML+=`
-<tr>
+t.innerHTML="<tr><th>No</th><th>Nama</th><th>Barang</th><th>Status</th></tr>"
+db.forEach(d=>{
+t.innerHTML+=`<tr>
 <td>${d.no}</td>
 <td>${d.nama}</td>
 <td>${d.barang}</td>
-<td>
-<select onchange="ubahStatus(${i},this.value)">
-<option ${d.status=="Proses"?"selected":""}>Proses</option>
-<option ${d.status=="Selesai"?"selected":""}>Selesai</option>
-</select>
-</td>
-<td>${d.foto?'<img src="'+d.foto+'" class="preview">':""}</td>
-<td><button onclick='printStruk(${JSON.stringify(d)})'>🧾</button></td>
-<td><button onclick="hapus(${i})">❌</button></td>
+<td>${d.status}</td>
 </tr>`
 })
 }
-
-function ubahStatus(i,val){
-db[i].status=val
-save()
-}
-
-function hapus(i){
-if(confirm("Hapus data?")){
-db.splice(i,1)
-save()
-}
-}
-
-// print struk
-function printStruk(d){
-let win=window.open("","","width=350,height=600")
-win.document.write(`
-<html>
-<head>
-<title>Struk Service</title>
-</head>
-
-<body style="font-family:Arial;background:#f5f5f5;padding:10px">
-
-<div style="max-width:320px;margin:auto;background:white;padding:15px;border-radius:10px;border:2px dashed black">
-
-<div style="text-align:center">
-<img src="logo.png" style="width:140px"><br>
-<b style="font-size:18px;color:#0b5394">SAINS QUALITY</b><br>
-<span style="font-size:13px">Computer & Service</span>
-<hr>
-</div>
-
-<table style="width:100%;font-size:14px">
-<tr><td>No Service</td><td>: <b>${d.no}</b></td></tr>
-<tr><td>Nama</td><td>: ${d.nama}</td></tr>
-<tr><td>Barang</td><td>: ${d.barang}</td></tr>
-<tr><td>Keluhan</td><td>: ${d.ket}</td></tr>
-<tr><td>Status</td><td>: <b style="color:${d.status=='Selesai'?'green':'orange'}">${d.status}</b></td></tr>
-<tr><td>Tanggal</td><td>: ${d.waktu ? d.waktu : new Date().toLocaleString()}</td></tr>
-</table>
-
-<hr>
-
-<div style="text-align:center;font-size:13px">
-Terima kasih 🙏<br>
-Servis Bergaransi<br>
-WA: 085692459331
-</div>
-
-</div>
+</script>
 
 </body>
 </html>
-`)
-win.document.close()
-win.print()
-}
 
-
-// excel
-function downloadExcel(){
-if(db.length==0){alert("Data kosong");return}
-
-let csv="NO,NAMA,BARANG,KELUHAN,STATUS,TANGGAL\n"
-db.forEach(d=>{
-csv+=`${d.no},"${d.nama}","${d.barang}","${d.ket}","${d.status}","${d.waktu}"\n`
-})
-
-let blob=new Blob([csv],{type:'text/csv'})
-let link=document.createElement("a")
-link.href=URL.createObjectURL(blob)
-link.download="Data_Service.csv"
-link.click()
-}
-</script>
-
-<!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyAvcZ5LkYy9mma922l85ahDEXeLVUpac-E",
-  authDomain: "toko-service-45cc5.firebaseapp.com",
-  databaseURL: "https://toko-service-45cc5-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "toko-service-45cc5",
-  storageBucket: "toko-service-45cc5.firebasestorage.app",
-  messagingSenderId: "356855373841",
-  appId: "1:356855373841:web:c9749edbd59796685611b0"
-};
-
-firebase.initializeApp(firebaseConfig);
-const dbFirebase = firebase.database().ref("service");
-
-let lastCount = 0
-
-function suaraMasuk(){
-let msg = new SpeechSynthesisUtterance("Service masuk bos")
-msg.lang="id-ID"
-msg.rate=0.9
-msg.pitch=1.2
-speechSynthesis.speak(msg)
-}
-
-dbFirebase.on("value", snap=>{
-db = snap.val() || []
-render()
-
-if(db.length > lastCount){
-suaraMasuk()
-}
-lastCount = db.length
-})
-
-// SAVE CLOUD
-function save(){
-dbFirebase.set(db)
-}
-</script>
-
-
-</body>
-</html>
 
 
 

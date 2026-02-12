@@ -132,38 +132,63 @@ function simpan(){
 let nama=document.getElementById("nama").value
 let barang=document.getElementById("barang").value
 let ket=document.getElementById("ket").value
+let biaya=document.getElementById("biaya").value
+let status=document.getElementById("status").value
 let file=document.getElementById("foto").files[0]
 
-if(!nama||!barang){alert("Isi dulu bro");return}
+if(!nama||!barang){
+alert("Isi dulu bro")
+return
+}
 
 let no=getNextNo()
-let status=document.getElementById("status").value
 let waktu=new Date().toLocaleString()
 
 if(file){
 let reader=new FileReader()
 reader.onload=function(e){
-db.push({no,nama,barang,ket,status,waktu,foto:e.target.result})
-save()
+
+db.push({
+no:n o,
+nama:nama,
+barang:barang,
+ket:ket,
+biaya:biaya,
+status:status,
+waktu:waktu,
+foto:e.target.result
+})
+
+dbFirebase.set(db)   // ⬅️ SIMPAN CLOUD
 }
 reader.readAsDataURL(file)
+
 }else{
-db.push({no,nama,barang,ket,status,waktu,foto:""})
-save()
+
+db.push({
+no:no,
+nama:nama,
+barang:barang,
+ket:ket,
+biaya:biaya,
+status:status,
+waktu:waktu,
+foto:""
+})
+
+dbFirebase.set(db)   // ⬅️ SIMPAN CLOUD
 }
 
 document.getElementById("nama").value=""
 document.getElementById("barang").value=""
 document.getElementById("ket").value=""
+document.getElementById("biaya").value=""
 document.getElementById("foto").value=""
 document.getElementById("status").value="Proses"
 
+alert("Tersimpan bos 😎")
 }
 
-function save(){
-localStorage.setItem("db",JSON.stringify(db))
-render()
-}
 
 function render(){
 let t=document.getElementById("tabel")

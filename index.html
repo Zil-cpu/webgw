@@ -78,6 +78,7 @@ td,th{padding:8px;border:1px solid #ccc}
 
 <input type="text" id="no_service" readonly placeholder="No Service"><br>
 <input type="text" id="nama" placeholder="Nama Customer"><br>
+<input type="text" id="hp" placeholder="No HP Customer">
 <input type="text" id="barang" placeholder="Nama Barang"><br>
 <input type="text" id="keluhan" placeholder="Keluhan"><br>
 <input type="number" id="biaya" placeholder="Biaya Service (Rp)"><br>
@@ -143,11 +144,12 @@ return "SRV-"+String(last).padStart(4,'0');
 }
 
 
-// SIMPAN DATA
+
 // SIMPAN DATA
 function simpan(){
 let no=document.getElementById("no_service").value;
 let nama=document.getElementById("nama").value;
+let hp=document.getElementById("hp").value;
 let barang=document.getElementById("barang").value;
 let keluhan=document.getElementById("keluhan").value;
 let biaya=document.getElementById("biaya").value || 0;
@@ -158,7 +160,7 @@ if(nama==""){alert("Isi nama bro");return;}
 
 let data=JSON.parse(localStorage.getItem("service")||"[]");
 
-data.push({no,jam,nama,barang,keluhan,biaya,status});
+data.push({no,jam,nama,hp,barang,keluhan,biaya,status});
 localStorage.setItem("service",JSON.stringify(data));
 
 loadData();
@@ -222,6 +224,7 @@ No: <b>${d.no}</b><br>
 ${d.jam}<hr>
 
 Nama: ${d.nama}<br>
+Hp: ${d.hp}<br>
 Barang: ${d.barang}<br>
 Keluhan: ${d.keluhan}<br>
 Status: <b>${d.status}</b><br>

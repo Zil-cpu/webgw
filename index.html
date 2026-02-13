@@ -149,6 +149,36 @@ return "SRV-"+String(last).padStart(4,'0');
 
 
 // SIMPAN DATA
+function kirimWA(nama,hp,barang,keluhan,biaya,status,no){
+
+// format nomor indo
+hp = hp.replace(/^0/,'62');
+
+let pesan = `📢 *SERVICE MASUK*
+
+No: ${no}
+Nama: ${nama}
+Barang: ${barang}
+Keluhan: ${keluhan}
+Status: ${status}
+
+Terima kasih 🙏`;
+
+if(status=="SELESAI"){
+pesan = `✅ *SERVICE SELESAI*
+
+No: ${no}
+Nama: ${nama}
+Barang: ${barang}
+Biaya: Rp${biaya}
+
+Barang sudah bisa diambil 🙏`;
+}
+
+let url = `https://wa.me/${hp}?text=${encodeURIComponent(pesan)}`;
+window.open(url,"_blank");
+}
+
 function simpan(){
 let no=document.getElementById("no_service").value;
 let nama=document.getElementById("nama").value;
@@ -183,6 +213,8 @@ status:status
 
 localStorage.setItem("service",JSON.stringify(data));
 loadData();
+kirimWA(nama,hp,barang,keluhan,biaya,status,no);
+
 }
 reader.readAsDataURL(fotoFile);
 

@@ -78,7 +78,7 @@ td,th{padding:8px;border:1px solid #ccc}
 
 <input type="text" id="no_service" readonly placeholder="No Service"><br>
 <input type="text" id="nama" placeholder="Nama Customer"><br>
-<input type="text" id="hp" placeholder="No HP Customer">
+<input type="text" id="hp" placeholder="No HP Customer"><br>
 <input type="text" id="barang" placeholder="Nama Barang"><br>
 <input type="text" id="keluhan" placeholder="Keluhan"><br>
 <input type="file" id="foto" accept="image/*"><br>
@@ -164,17 +164,53 @@ if(nama==""){alert("Isi nama bro");return;}
 
 let data=JSON.parse(localStorage.getItem("service")||"[]");
 
-data.push({no,jam,nama,hp,barang,keluhan,foto,biaya,status});
-localStorage.setItem("service",JSON.stringify(data));
+// JIKA ADA FOTO
+if(fotoFile){
+let reader = new FileReader();
+reader.onload = function(e){
 
+data.push({
+no:no,
+jam:jam,
+nama:nama,
+hp:hp,
+barang:barang,
+keluhan:keluhan,
+foto:e.target.result,
+biaya:biaya,
+status:status
+});
+
+localStorage.setItem("service",JSON.stringify(data));
 loadData();
+}
+reader.readAsDataURL(fotoFile);
+
+}else{
+// TANPA FOTO
+data.push({
+no:no,
+jam:jam,
+nama:nama,
+hp:hp,
+barang:barang,
+keluhan:keluhan,
+foto:"",
+biaya:biaya,
+status:status
+});
+
+localStorage.setItem("service",JSON.stringify(data));
+loadData();
+}
 
 // reset form
 document.getElementById("nama").value="";
+document.getElementById("hp").value="";
 document.getElementById("barang").value="";
 document.getElementById("keluhan").value="";
 document.getElementById("biaya").value="";
-
+document.getElementById("foto").value="";
 document.getElementById("no_service").value = generateNoService();
 }
 

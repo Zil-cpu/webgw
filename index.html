@@ -81,7 +81,10 @@ td,th{padding:8px;border:1px solid #ccc}
 <input type="text" id="hp" placeholder="No HP Customer">
 <input type="text" id="barang" placeholder="Nama Barang"><br>
 <input type="text" id="keluhan" placeholder="Keluhan"><br>
+<input type="file" id="foto" accept="image/*"><br>
 <input type="number" id="biaya" placeholder="Biaya Service (Rp)"><br>
+
+
 
 <select id="status">
 <option>Masuk</option>
@@ -152,6 +155,7 @@ let nama=document.getElementById("nama").value;
 let hp=document.getElementById("hp").value;
 let barang=document.getElementById("barang").value;
 let keluhan=document.getElementById("keluhan").value;
+let fotoFile = document.getElementById("foto").files[0];
 let biaya=document.getElementById("biaya").value || 0;
 let status=document.getElementById("status").value;
 let jam=waktu();
@@ -160,7 +164,7 @@ if(nama==""){alert("Isi nama bro");return;}
 
 let data=JSON.parse(localStorage.getItem("service")||"[]");
 
-data.push({no,jam,nama,hp,barang,keluhan,biaya,status});
+data.push({no,jam,nama,hp,barang,keluhan,foto,biaya,status});
 localStorage.setItem("service",JSON.stringify(data));
 
 loadData();
@@ -189,6 +193,7 @@ let html=`<tr>
 <th>Keluhan</th>
 <th>Biaya</th>
 <th>Status</th>
+<th>Foto</th>
 <th>Struk</th>
 </tr>`;
 
@@ -202,6 +207,7 @@ html+=`<tr>
 <td>${d.keluhan}</td>
 <td>Rp ${parseInt(d.biaya||0).toLocaleString()}</td>
 <td>${d.status}</td>
+<td>${d.foto ? '<img src="'+d.foto+'" width="60">' : ''}</td>
 <td><button onclick='printStruk(${JSON.stringify(d)})'>🧾</button></td>
 </tr>`;
 });

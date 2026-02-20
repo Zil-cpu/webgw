@@ -152,6 +152,12 @@ function getTodayDate(){
     return `${year}${month}${day}`;
 }
 
+// Load tiket saat halaman dibuka
+window.onload = function(){
+    const tickets = JSON.parse(localStorage.getItem("tickets")) || [];
+    tickets.forEach(ticket => addRow(ticket));
+};
+
 function createTicket(e){
     e.preventDefault();
 
@@ -159,10 +165,7 @@ function createTicket(e){
     const departemen = document.getElementById("departemen").value;
     const deskripsi = document.getElementById("deskripsi").value;
 
-    const table = document.getElementById("ticketTable");
-
     const today = getTodayDate();
-
     let counterKey = "ticketCounter_" + today;
     let counter = localStorage.getItem(counterKey)
         ? parseInt(localStorage.getItem(counterKey))
@@ -170,21 +173,43 @@ function createTicket(e){
 
     const ticketNumber = `TCK-${today}-${String(counter).padStart(4,'0')}`;
 
-    const row = table.insertRow();
-    row.innerHTML = `
-        <td>${ticketNumber}</td>
-        <td>${nama}</td>
-        <td>${departemen}</td>
-        <td>${deskripsi}</td>
-        <td class="status-open">OPEN</td>
-    `;
+    const ticketData = {
+        id: ticketNumber,
+        nama: nama,
+        departemen: departemen,
+        deskripsi: deskripsi,
+        status: "OPEN"
+    };
+
+    addRow(ticketData);
+
+    // Simpan ke localStorage
+    const tickets = JSON.parse(localStorage.getItem("tickets")) || [];
+    tickets.push(ticketData);
+    localStorage.setItem("tickets", JSON.stringify(tickets));
 
     counter++;
     localStorage.setItem(counterKey, counter);
 
     e.target.reset();
 }
+
+function addRow(ticket){
+    const table = document.getElementById("ticketTable");
+    const row = table.insertRow();
+
+    row.innerHTML = `
+        <td>${ticket.id}</td>
+        <td>${ticket.nama}</td>
+        <td>${ticket.departemen}</td>
+        <td>${ticket.deskripsi}</td>
+        <td class="${ticket.status === 'OPEN' ? 'status-open' : 'status-done'}">
+            ${ticket.status}
+        </td>
+    `;
+}
 </script>
+
 
 
 </body>

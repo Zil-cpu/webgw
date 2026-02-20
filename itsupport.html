@@ -121,9 +121,12 @@ tr:hover{
     </select>
 
     <textarea id="deskripsi" placeholder="Deskripsi Kendala" rows="3" required></textarea>
+    <textarea id="penyelesaian" placeholder="Penyelesaian (diisi IT)" rows="3"></textarea>
 
     <button type="submit">Buat Tiket</button>
 </form>
+
+
 
 <hr>
 
@@ -135,6 +138,7 @@ tr:hover{
             <th>Nama</th>
             <th>Departemen</th>
             <th>Deskripsi</th>
+            <th>Penyelesaian</th>
             <th>Status</th>
         </tr>
     </thead>
@@ -164,6 +168,7 @@ function createTicket(e){
     const nama = document.getElementById("nama").value;
     const departemen = document.getElementById("departemen").value;
     const deskripsi = document.getElementById("deskripsi").value;
+    const penyelesaian = document.getElementById("penyelesaian").value;
 
     const today = getTodayDate();
     let counterKey = "ticketCounter_" + today;
@@ -178,12 +183,12 @@ function createTicket(e){
         nama: nama,
         departemen: departemen,
         deskripsi: deskripsi,
-        status: "OPEN"
+        penyelesaian: penyelesaian,
+        status: penyelesaian ? "DONE" : "OPEN"
     };
 
     addRow(ticketData);
 
-    // Simpan ke localStorage
     const tickets = JSON.parse(localStorage.getItem("tickets")) || [];
     tickets.push(ticketData);
     localStorage.setItem("tickets", JSON.stringify(tickets));
@@ -203,12 +208,14 @@ function addRow(ticket){
         <td>${ticket.nama}</td>
         <td>${ticket.departemen}</td>
         <td>${ticket.deskripsi}</td>
+        <td>${ticket.penyelesaian || '-'}</td>
         <td class="${ticket.status === 'OPEN' ? 'status-open' : 'status-done'}">
             ${ticket.status}
         </td>
     `;
 }
 </script>
+
 
 
 

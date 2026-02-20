@@ -144,7 +144,9 @@ tr:hover{
 </div>
 
 <script>
-let ticketId = 1;
+let ticketId = localStorage.getItem("lastTicketId") 
+    ? parseInt(localStorage.getItem("lastTicketId")) 
+    : 1;
 
 function createTicket(e){
     e.preventDefault();
@@ -157,16 +159,20 @@ function createTicket(e){
 
     const row = table.insertRow();
     row.innerHTML = `
-        <td>${ticketId++}</td>
+        <td>TCK-${ticketId.toString().padStart(4,'0')}</td>
         <td>${nama}</td>
         <td>${departemen}</td>
         <td>${deskripsi}</td>
         <td class="status-open">OPEN</td>
     `;
 
+    ticketId++;
+    localStorage.setItem("lastTicketId", ticketId);
+
     e.target.reset();
 }
 </script>
+
 
 </body>
 </html>

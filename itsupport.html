@@ -1,48 +1,15 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Support Ticket</title>
+
 <style>
-<body>
-
-<div class="container">
-<h1>IT Support Ticket System</h1>
-
-<form onsubmit="createTicket(event)">
-    <input type="text" id="nama" placeholder="Nama Pelapor" required>
-
-    <select id="departemen" required>
-        <option value="">-- Pilih Departemen --</option>
-    </select>
-
-    <textarea id="deskripsi" placeholder="Deskripsi Kendala" rows="3" required></textarea>
-
-    <button type="submit">Buat Tiket</button>
-</form>
-
-<hr>
-
-<h2>Daftar Tiket</h2>
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nama</th>
-            <th>Departemen</th>
-            <th>Deskripsi</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody id="ticketTable"></tbody>
-</table>
-
-<div class="admin-box">
-    <h3>⚙ Admin Departemen</h3>
-    <input type="text" id="newDepartment" placeholder="Nama Departemen Baru">
-    <button onclick="addDepartment()">Tambah</button>
-    <div id="departmentList" style="margin-top:10px;"></div>
-</div>
-
-</div>
-
-</body>
-
+body{
+    font-family: 'Segoe UI', sans-serif;
+    margin:0;
+    background: linear-gradient(135deg,#1e3c72,#2a5298);
 }
 
 .container{
@@ -128,3 +95,77 @@ tr:hover{
     border-radius:10px;
 }
 </style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>IT Support Ticket System</h1>
+
+<form onsubmit="createTicket(event)">
+    <input type="text" id="nama" placeholder="Nama Pelapor" required>
+
+    <select id="departemen" required>
+        <option value="">-- Pilih Departemen --</option>
+        <option>IT</option>
+        <option>Redaksi</option>
+        <option>Listener</option>
+        <option>Medsos</option>
+        <option>Editor</option>
+        <option>Website</option>
+        <option>HRD</option>
+        <option>GA</option>
+        <option>Finance</option>
+        <option>Marketing</option>
+    </select>
+
+    <textarea id="deskripsi" placeholder="Deskripsi Kendala" rows="3" required></textarea>
+
+    <button type="submit">Buat Tiket</button>
+</form>
+
+<hr>
+
+<h2>Daftar Tiket</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nama</th>
+            <th>Departemen</th>
+            <th>Deskripsi</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="ticketTable"></tbody>
+</table>
+
+</div>
+
+<script>
+let ticketId = 1;
+
+function createTicket(e){
+    e.preventDefault();
+
+    const nama = document.getElementById("nama").value;
+    const departemen = document.getElementById("departemen").value;
+    const deskripsi = document.getElementById("deskripsi").value;
+
+    const table = document.getElementById("ticketTable");
+
+    const row = table.insertRow();
+    row.innerHTML = `
+        <td>${ticketId++}</td>
+        <td>${nama}</td>
+        <td>${departemen}</td>
+        <td>${deskripsi}</td>
+        <td class="status-open">OPEN</td>
+    `;
+
+    e.target.reset();
+}
+</script>
+
+</body>
+</html>

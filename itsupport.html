@@ -1,1 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Support Ticket System</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style>
+body{
+font-family:Arial;
+background:linear-gradient(to right,#1e3c72,#2a5298);
+color:#fff;
+text-align:center;
+}
+
+.container{
+background:#fff;
+color:#000;
+width:95%;
+max-width:1100px;
+margin:30px auto;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 15px rgba(0,0,0,0.3);
+}
+
+h1{
+margin-bottom:20px;
+}
+
+input,select,textarea{
+width:100%;
+padding:8px;
+margin:5px 0 10px 0;
+border-radius:5px;
+border:1px solid #ccc;
+}
+
+button{
+padding:10px 15px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+margin:5px;
+}
+
+.btn-add{background:#28a745;color:#fff;}
+.btn-export{background:#007bff;color:#fff;}
+.btn-delete{background:#dc3545;color:#fff;}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+th,td{
+border:1px solid #ddd;
+padding:8px;
+font-size:14px;
+}
+
+th{
+background:#2a5298;
+color:#fff;
+}
+
+.status-open{color:red;font-weight:bold;}
+.status-process{color:orange;font-weight:bold;}
+.status-done{color:green;font-weight:bold;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>IT Support Ticket System</h1>
+
+<form id="ticketForm">
+<input type="text" id="nama" placeholder="Nama Pelapor" required>
+
+<select id="departemen" required>
+<option value="">-- Pilih Departemen --</option>
+<option>HRD</option>
+<option>Finance</option>
+<option>Marketing</option>
+<option>Warehouse</option>
+<option>IT</option>
+</select>
+
+<input type="text" id="kendala" placeholder="Jenis Kendala" required>
+
+<textarea id="deskripsi" placeholder="Deskripsi Masalah" required></textarea>
+
+<select id="prioritas" required>
+<option value="">-- Prioritas --</option>
+<option>Low</option>
+<option>Medium</option>
+<option>High</option>
+</select>
+
+<button type="submit" class="btn-add">Buat Tiket</button>
+<button type="button" onclick="exportExcel()" class="btn-export">Export Excel</button>
+</form>
+
+<table id="ticketTable">
+<thead>
+<tr>
+<th>No</th>
+<th>No Tiket</th>
+<th>Nama</th>
+<th>Departemen</th>
+<th>Kendala</th>
+<th>Prioritas</th>
+<th>Status</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+</div>
+
+<script>
+let ticketNumber = 1;
+
+document.getElementById("ticketForm").addEventListener("submit", function(e){
+e.preventDefault();
+
+let nama = document.getElementById("nama").value;
+let departemen = document.getElementById("departemen").value;
+let kendala = document.getElementById("kendala").value;
+let prioritas = document.getElementById("prioritas").value;
+
+let status = "Open";
+
+let table = document.getElementById("ticketTable").getElementsByTagName('tbody')[0];
+let row = table.insertRow();
+
+row.insertCell(0).innerHTML = table.rows.length;
+row.insertCell(1).innerHTML = "TCK-" + String(ticketNumber).padStart(4,'0');
+row.insertCell(2).innerHTML = nama;
+row.insertCell(3).innerHTML = departemen;
+row.insertCell(4).innerHTML = kendala;
+row.insertCell(5).innerHTML = prioritas;
+
+let statusCell = row.insertCell(6);
+statusCell.innerHTML = status;
+statusCell.className = "status-open";
+
+let aksiCell = row.insertCell(7);
+aksiCell.innerHTML = `
+<button onclick="ubahStatus(this)">Process</button>
+<button onclick="hapusRow(this)" class="btn-delete">Hapus</button>
+`;
+
+ticketNumber++;
+document.getElementById("ticketForm").reset();
+});
+
+function ubahStatus(btn){
+let row = btn.parentNode.parentNode;
+let statusCell = row.cells[6];
+
+if(statusCell.innerHTML === "Open"){
+statusCell.innerHTML = "Process";
+statusCell.className = "status-process";
+btn.innerHTML = "Done";
+}
+else if(statusCell.innerHTML === "Process"){
+statusCell.innerHTML = "Done";
+statusCell.className = "status-done";
+btn.remove();
+}
+}
+
+function hapusRow(btn){
+let row = btn.parentNode.parentNode;
+row.remove();
+}
+
+function exportExcel(){
+let table = document.getElementById("ticketTable");
+let wb = XLSX.utils.table_to_book(table, {sheet:"Tickets"});
+XLSX.writeFile(wb,"IT_Support_Tickets.xlsx");
+}
+</script>
+
+</body>
+</html>
 

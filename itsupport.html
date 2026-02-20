@@ -1,8 +1,48 @@
 <style>
-body{
-    font-family: 'Segoe UI', sans-serif;
-    margin:0;
-    background: linear-gradient(135deg,#1e3c72,#2a5298);
+<body>
+
+<div class="container">
+<h1>IT Support Ticket System</h1>
+
+<form onsubmit="createTicket(event)">
+    <input type="text" id="nama" placeholder="Nama Pelapor" required>
+
+    <select id="departemen" required>
+        <option value="">-- Pilih Departemen --</option>
+    </select>
+
+    <textarea id="deskripsi" placeholder="Deskripsi Kendala" rows="3" required></textarea>
+
+    <button type="submit">Buat Tiket</button>
+</form>
+
+<hr>
+
+<h2>Daftar Tiket</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nama</th>
+            <th>Departemen</th>
+            <th>Deskripsi</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="ticketTable"></tbody>
+</table>
+
+<div class="admin-box">
+    <h3>⚙ Admin Departemen</h3>
+    <input type="text" id="newDepartment" placeholder="Nama Departemen Baru">
+    <button onclick="addDepartment()">Tambah</button>
+    <div id="departmentList" style="margin-top:10px;"></div>
+</div>
+
+</div>
+
+</body>
+
 }
 
 .container{

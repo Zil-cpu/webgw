@@ -100,7 +100,9 @@ tr:hover{
 <body>
 
 <div class="container">
+<div id="clock" style="text-align:right; font-weight:bold; color:#2a5298;"></div>
 <h1>IT Support Ticket System</h1>
+
 
 <form onsubmit="createTicket(event)">
     <input type="text" id="nama" placeholder="Nama Pelapor" required>
@@ -156,6 +158,27 @@ function getTodayDate(){
     const day = String(today.getDate()).padStart(2,'0');
     return `${year}${month}${day}`;
 }
+
+function updateClock(){
+    const now = new Date();
+
+    const jam = String(now.getHours()).padStart(2,'0');
+    const menit = String(now.getMinutes()).padStart(2,'0');
+    const detik = String(now.getSeconds()).padStart(2,'0');
+
+    const tanggal = now.toLocaleDateString('id-ID', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    document.getElementById("clock").innerHTML =
+        tanggal + " | " + jam + ":" + menit + ":" + detik;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
 
 // Load tiket saat halaman dibuka
 window.onload = function(){

@@ -138,8 +138,6 @@ tr:hover{
 
 <form onsubmit="createTicket(event)">
     <input type="text" id="nama" placeholder="Nama Pelapor" required>
-    <label>Deskripsi Kendala</label>
-<textarea id="deskripsi" placeholder="Tulis kendala disini..." rows="3" required></textarea>
 
 <label>Upload Foto (Opsional)</label>
 <input type="file" id="foto" accept="image/*">
@@ -162,7 +160,8 @@ tr:hover{
 
     <textarea id="deskripsi" placeholder="Deskripsi Kendala" rows="3" required></textarea>
     <textarea id="penyelesaian" placeholder="Penyelesaian (diisi IT)" rows="3"></textarea>
-
+    <label>Upload Foto (Opsional)</label>
+    <input type="file" id="foto" accept="image/*">
     <button type="submit">Buat Tiket</button>
 </form>
 

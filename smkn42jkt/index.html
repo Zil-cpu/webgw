@@ -30,6 +30,22 @@
       -webkit-text-fill-color: transparent;
     }
 
+    .live-indicator {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: -10px;
+  margin-bottom: 20px;
+  color: red;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+
     /* Responsive Video */
     .video-wrapper {
       position: relative;
@@ -61,6 +77,10 @@
 
   <!-- 🔥 PINDAHKAN KE SINI -->
   <h1 class="judul">LIVE STREAMING</h1>
+  <div class="live-indicator">
+  🔴 LIVE ● ON AIR
+</div>
+
 
   <div class="video-wrapper">
     <iframe 

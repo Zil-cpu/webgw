@@ -1,0 +1,91 @@
+<style>
+      /* Reset default browser styles */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      
+      /* Add a custom font */
+      @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+      
+    
+      #video {
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+      
+      /* Style the video controls */
+      .controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        font-size: 18px;
+        padding: 0 20px;
+        box-sizing: border-box;
+        transition: transform 0.3s;
+      }
+      
+      .controls:hover {
+        transform: translateY(-60px);
+      }
+      
+      .play-pause {
+        cursor: pointer;
+        margin-right: 20px;
+      }
+      
+      /* Style the play/pause button */
+      .play-pause:before {
+        content: '';
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-left: 20px solid #fff;
+      }
+      
+      .play-pause.playing:before {
+        border-left: 10px solid transparent;
+        border-right: 20px solid #fff;
+      }
+    </style>
+    <!--<iframe width="640" height="640" src="https://cdn.siar.us/player/?link=v2.siar.us/tv42jkt/live" scrolling="no" frameborder="0" accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+    <!--<div class="video-container">
+    <!--  <video id="video" controls autoplay></video>-->
+    <!--  <div class="controls">-->
+    <!--    <div class="play-pause"></div>-->
+    <!--    <div class="time">00:00 / 00:00</div>-->
+    <!--    <div class="volume"></div>-->
+    <!--    <div class="fullscreen"></div>-->
+    <!--  </div>-->
+    <!--</div>!-->-->
+    <!--<script>-->
+    <!--  var video = document.getElementById('video');-->
+    <!--  var source = document.createElement('source');-->
+    <!--  source.setAttribute('src', 'https://youtube.com/live/HAnF9UBkoQ4');-->
+    <!--  source.setAttribute('type', 'video/rtmp');-->
+    <!--  video.appendChild(source);-->
+      
+    <!--  // Add play/pause functionality-->
+    <!--  var playPauseBtn = document.querySelector('.play-pause');-->
+    <!--  playPauseBtn.addEventListener('click', function() {-->
+    <!--    if (video.paused) {-->
+    <!--      video.play();-->
+    <!--      playPauseBtn.classList.add('playing');-->
+    <!--    } else {-->
+    <!--      video.pause();-->
+    <!--      playPauseBtn.classList.remove('playing');-->
+    <!--    }-->
+    <!--  });-->
+    <!--</script>-->
+    
+<iframe width="100%" height="500" src="https://www.youtube.com/embed/F6I94BHiHVc?si=TfMx1yzpMWI5XUnk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>

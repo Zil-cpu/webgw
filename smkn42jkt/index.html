@@ -160,11 +160,13 @@
 
   <div class="tv-frame">
   <div class="video-wrapper">
-    <iframe 
-      src="https://www.youtube.com/embed/F6I94BHiHVc"
-      frameborder="0"
-      allowfullscreen>
-    </iframe>
+   <iframe 
+  id="liveVideo"
+  src="https://www.youtube.com/embed/F6I94BHiHVc?enablejsapi=1"
+  frameborder="0"
+  allow="fullscreen"
+  allowfullscreen>
+</iframe>
   </div>
 </div>
 
@@ -177,6 +179,22 @@
     
   </div>
 
+  <script>
+  const video = document.getElementById("liveVideo");
+
+  function autoFullscreen() {
+    if (window.innerWidth <= 600) {
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      } else if (video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen();
+      }
+    }
+  }
+
+  // Trigger saat user tap layar
+  document.addEventListener("click", autoFullscreen, { once: true });
+</script>
 </body>
 </html>
 

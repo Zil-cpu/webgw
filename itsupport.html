@@ -172,6 +172,9 @@ th, td{
 <body>
 
 <div class="container">
+<div style="text-align:right; margin-bottom:10px;">
+<button onclick="adminLogin()">Login Admin</button>
+</div>
 <div id="clock" style="text-align:right; font-weight:bold; color:#2a5298;"></div>
 <h1>IT Support Ticket System</h1>
 
@@ -226,6 +229,20 @@ th, td{
 </div>
 
 <script>
+
+let isAdmin = false;
+
+function adminLogin(){
+    const pass = prompt("Masukkan Password Admin:");
+
+    if(pass === "admin123"){
+        alert("Login Admin Berhasil");
+        isAdmin = true;
+        loadTickets();
+    }else{
+        alert("Password salah");
+    }
+}
 function autoDarkMode(){
     const hour = new Date().getHours();
 
@@ -270,10 +287,15 @@ setInterval(updateClock, 1000);
 updateClock();
 
 // Load tiket saat halaman dibuka
-window.onload = function(){
+function loadTickets(){
+    const table = document.getElementById("ticketTable");
+    table.innerHTML = "";
+
     const tickets = JSON.parse(localStorage.getItem("tickets")) || [];
-    tickets.forEach(ticket => addRow(ticket));
-};
+    tickets.forEach((ticket,index) => addRow(ticket,index));
+}
+
+window.onload = loadTickets;
 
 function createTicket(e){
     e.preventDefault();
@@ -312,7 +334,7 @@ function createTicket(e){
     e.target.reset();
 }
 
-function addRow(ticket){
+function addRow(ticket,index){
     const table = document.getElementById("ticketTable");
     const row = table.insertRow();
 
@@ -325,8 +347,29 @@ function addRow(ticket){
         <td class="${ticket.status === 'OPEN' ? 'status-open' : 'status-done'}">
             ${ticket.status}
         </td>
+        ${isAdmin ? `<td>
+            <button onclick="editTicket(${index})">Edit</button>
+        </td>` : ''}
     `;
 }
+
+function editTicket(index){
+
+const tickets = JSON.parse(localStorage.getItem("tickets"));
+
+const solusi = prompt("Masukkan Penyelesaian:", tickets[index].penyelesaian);
+
+if(solusi !== null){
+tickets[index].penyelesaian = solusi;
+tickets[index].status = "DONE";
+
+localStorage.setItem("tickets", JSON.stringify(tickets));
+
+loadTickets();
+}
+}
+
+</script>
 </script>
 
 

@@ -2,10 +2,13 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IT Support Ticket</title>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <style>
 body{
@@ -37,11 +40,6 @@ input, select, textarea{
     padding:10px;
     border-radius:8px;
     border:1px solid #ccc;
-    font-size:14px;
-}
-
-textarea{
-    resize:none;
 }
 
 button{
@@ -50,13 +48,7 @@ button{
     border-radius:8px;
     background:#2a5298;
     color:white;
-    font-weight:bold;
     cursor:pointer;
-    transition:0.3s;
-}
-
-button:hover{
-    background:#1e3c72;
 }
 
 table{
@@ -76,96 +68,21 @@ td{
     border-bottom:1px solid #ddd;
 }
 
-tr:hover{
-    background:#f5f5f5;
-}
+.status-open{color:red;font-weight:bold;}
+.status-done{color:green;font-weight:bold;}
 
-.status-open{
-    color:red;
-    font-weight:bold;
-}
-
-.status-done{
-    color:green;
-    font-weight:bold;
-}
-
-.admin-box{
-    margin-top:30px;
-    padding:15px;
-    background:#f8f9fa;
-    border-radius:10px;
-}
-
-/* DARK MODE */
 .dark-mode{
-    background: #121212 !important;
-    color: white !important;
+    background:#121212 !important;
+    color:white !important;
 }
 
 .dark-mode .container{
-    background: #1e1e1e;
-    color: white;
+    background:#1e1e1e;
 }
-
-.dark-mode h1{
-    color: #4da3ff;
-}
-
-.dark-mode table th{
-    background:#333;
-}
-
-.dark-mode table td{
-    border-bottom:1px solid #444;
-}
-
-.dark-mode input,
-.dark-mode select,
-.dark-mode textarea{
-    background:#2a2a2a;
-    color:white;
-    border:1px solid #555;
-}
-
-/* =========================
-   RESPONSIVE MOBILE
-========================= */
 
 @media (max-width:768px){
-
-.container{
-    margin:10px;
-    padding:20px;
-}
-
-h1{
-    font-size:22px;
-}
-
-h2{
-    font-size:18px;
-}
-
-input, select, textarea, button{
-    font-size:16px;
-}
-
-table{
-    display:block;
-    overflow-x:auto;
-    white-space:nowrap;
-}
-
-th, td{
-    font-size:14px;
-    padding:8px;
-}
-
-#clock{
-    font-size:12px;
-}
-
+    .container{margin:10px;padding:20px;}
+    table{display:block;overflow-x:auto;}
 }
 </style>
 
@@ -174,12 +91,14 @@ th, td{
 <body>
 
 <div class="container">
-<div style="text-align:right; margin-bottom:10px;">
+
+<div style="text-align:right;">
 <button onclick="adminLogin()">Login Admin</button>
 </div>
-<div id="clock" style="text-align:right; font-weight:bold; color:#2a5298;"></div>
-<h1>IT Support Ticket System</h1>
 
+<div id="clock" style="text-align:right;font-weight:bold;"></div>
+
+<h1>IT Support Ticket System</h1>
 
 <form onsubmit="createTicket(event)">
     <input type="text" id="nama" placeholder="Nama Pelapor" required>
@@ -190,156 +109,120 @@ th, td{
         <option>Redaksi</option>
         <option>Listener</option>
         <option>Medsos</option>
-        <option>Editor</option>
-        <option>Operator</option>
-        <option>Website</option>
-        <option>HRD</option>
-        <option>GA</option>
-        <option>Finance</option>
-        <option>Marketing</option>
-        <option>Indorent</option>
     </select>
 
-    <textarea id="deskripsi" placeholder="Deskripsi Kendala" rows="3" required></textarea>
-       <label>Upload Foto (Opsional)</label>
-    <input type="file" id="foto" accept="image/*">
-   
-    <textarea id="penyelesaian" placeholder="Penyelesaian (diisi IT)" rows="3"></textarea>
-     <button type="submit">Buat Tiket</button>
-  
+    <textarea id="deskripsi" placeholder="Deskripsi Kendala" required></textarea>
+
+    <textarea id="penyelesaian" placeholder="Penyelesaian (IT)"></textarea>
+
+    <button type="submit">Buat Tiket</button>
 </form>
-
-
 
 <hr>
 
 <h2>Daftar Tiket</h2>
+
 <table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nama</th>
-            <th>Departemen</th>
-            <th>Deskripsi</th>
-            <th>Penyelesaian</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody id="ticketTable"></tbody>
+<thead>
+<tr>
+<th>No</th>
+<th>Nama</th>
+<th>Dept</th>
+<th>Deskripsi</th>
+<th>Penyelesaian</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="ticketTable"></tbody>
 </table>
 
 </div>
+
 <script>
 
+// FIREBASE CONFIG
 const firebaseConfig = {
-  apiKey: "AIzaSyCsD94aN81UAuGK5R_Rkuko962eYaxoXnI",
+  apiKey: "AIzaSy...",
   authDomain: "it-supportticket.firebaseapp.com",
   databaseURL: "https://it-supportticket-default-rtdb.firebaseio.com/",
-  projectId: "it-supportticket",
-  storageBucket: "it-supportticket.firebasestorage.app",
-  messagingSenderId: "115967715698",
-  appId: "1:115967715698:web:87d9946912add507af55eb"
+  projectId: "it-supportticket"
 };
 
-// INIT FIREBASE
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 let isAdmin = false;
 
-// ================= LOAD DATA =================
+// LOAD DATA
 function loadTickets(){
     const table = document.getElementById("ticketTable");
 
     db.ref("tickets").on("value", snapshot => {
         table.innerHTML = "";
-
         let no = 1;
 
         snapshot.forEach(child => {
-            const ticket = child.val();
+            const t = child.val();
 
             const row = table.insertRow();
             row.innerHTML = `
                 <td>${no++}</td>
-                <td>${ticket.nama}</td>
-                <td>${ticket.departemen}</td>
-                <td>${ticket.deskripsi}</td>
-                <td>${ticket.penyelesaian || '-'}</td>
-                <td class="${ticket.status === 'OPEN' ? 'status-open' : 'status-done'}">
-                    ${ticket.status}
+                <td>${t.nama}</td>
+                <td>${t.departemen}</td>
+                <td>${t.deskripsi}</td>
+                <td>${t.penyelesaian || '-'}</td>
+                <td class="${t.status==='OPEN'?'status-open':'status-done'}">
+                    ${t.status}
                 </td>
             `;
         });
     });
 }
 
-// ================= CREATE DATA =================
+// CREATE
 function createTicket(e){
     e.preventDefault();
 
-    const ticketData = {
-        nama: document.getElementById("nama").value,
-        departemen: document.getElementById("departemen").value,
-        deskripsi: document.getElementById("deskripsi").value,
-        penyelesaian: document.getElementById("penyelesaian").value,
-        status: "OPEN"
+    const data = {
+        nama: nama.value,
+        departemen: departemen.value,
+        deskripsi: deskripsi.value,
+        penyelesaian: penyelesaian.value,
+        status: penyelesaian.value ? "DONE" : "OPEN"
     };
 
-    db.ref("tickets").push(ticketData);
-
+    db.ref("tickets").push(data);
     e.target.reset();
 }
 
-// ================= ADMIN =================
+// ADMIN
 function adminLogin(){
-    const pass = prompt("Masukkan Password Admin:");
-    if(pass === "admin123"){
-        alert("Login Admin Berhasil");
+    const pass = prompt("Password:");
+    if(pass==="admin123"){
+        alert("Login sukses");
         isAdmin = true;
     }else{
-        alert("Password salah");
+        alert("Salah");
     }
 }
 
-// ================= CLOCK =================
+// CLOCK
 function updateClock(){
     const now = new Date();
-
-    const jam = String(now.getHours()).padStart(2,'0');
-    const menit = String(now.getMinutes()).padStart(2,'0');
-    const detik = String(now.getSeconds()).padStart(2,'0');
-
-    const tanggal = now.toLocaleDateString('id-ID', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-
-    document.getElementById("clock").innerHTML =
-        tanggal + " | " + jam + ":" + menit + ":" + detik;
+    clock.innerHTML = now.toLocaleString('id-ID');
 }
+setInterval(updateClock,1000);
 
-setInterval(updateClock, 1000);
-updateClock();
+// DARK MODE AUTO
+(function(){
+    const h=new Date().getHours();
+    if(h>=18||h<6) document.body.classList.add("dark-mode");
+})();
 
-// ================= DARK MODE =================
-function autoDarkMode(){
-    const hour = new Date().getHours();
-    if(hour >= 18 || hour < 6){
-        document.body.classList.add("dark-mode");
-    }
-}
-autoDarkMode();
-
-// LOAD AWAL
+// INIT
 window.onload = loadTickets;
 
 </script>
-
-
-
 
 </body>
 </html>

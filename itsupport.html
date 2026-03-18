@@ -1,3 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Support Ticket</title>
+
+<style>
+body{
+    font-family: 'Segoe UI', sans-serif;
+    margin:0;
+    background: linear-gradient(135deg,#1e3c72,#2a5298);
+}
+
+.container{
+    max-width:1000px;
+    margin:40px auto;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+h1{
+    text-align:center;
+    color:#2a5298;
+}
+
+form{
+    display:grid;
+    gap:15px;
+}
+
+input, select, textarea{
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:14px;
+}
+
+textarea{
+    resize:none;
+}
+
+button{
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:#2a5298;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#1e3c72;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+th{
+    background:#2a5298;
+    color:white;
+    padding:10px;
+}
+
+td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+}
+
+tr:hover{
+    background:#f5f5f5;
+}
+
+.status-open{
+    color:red;
+    font-weight:bold;
+}
+
+.status-done{
+    color:green;
+    font-weight:bold;
+}
+
+.admin-box{
+    margin-top:30px;
+    padding:15px;
+    background:#f8f9fa;
+    border-radius:10px;
+}
+
+/* DARK MODE */
+.dark-mode{
+    background: #121212 !important;
+    color: white !important;
+}
+
+.dark-mode .container{
+    background: #1e1e1e;
+    color: white;
+}
+
+.dark-mode h1{
+    color: #4da3ff;
+}
+
+.dark-mode table th{
+    background:#333;
+}
+
+.dark-mode table td{
+    border-bottom:1px solid #444;
+}
+
+.dark-mode input,
+.dark-mode select,
+.dark-mode textarea{
+    background:#2a2a2a;
+    color:white;
+    border:1px solid #555;
+}
+
+/* =========================
+   RESPONSIVE MOBILE
+========================= */
+
+@media (max-width:768px){
+
+.container{
+    margin:10px;
+    padding:20px;
+}
+
+h1{
+    font-size:22px;
+}
+
+h2{
+    font-size:18px;
+}
+
+input, select, textarea, button{
+    font-size:16px;
+}
+
+table{
+    display:block;
+    overflow-x:auto;
+    white-space:nowrap;
+}
+
+th, td{
+    font-size:14px;
+    padding:8px;
+}
+
+#clock{
+    font-size:12px;
+}
+
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+<div style="text-align:right; margin-bottom:10px;">
+<button onclick="adminLogin()">Login Admin</button>
+</div>
+<div id="clock" style="text-align:right; font-weight:bold; color:#2a5298;"></div>
+<h1>IT Support Ticket System</h1>
+
+
+<form onsubmit="createTicket(event)">
+    <input type="text" id="nama" placeholder="Nama Pelapor" required>
+
+    <select id="departemen" required>
+        <option value="">-- Pilih Departemen --</option>
+        <option>IT</option>
+        <option>Redaksi</option>
+        <option>Listener</option>
+        <option>Medsos</option>
+        <option>Editor</option>
+        <option>Operator</option>
+        <option>Website</option>
+        <option>HRD</option>
+        <option>GA</option>
+        <option>Finance</option>
+        <option>Marketing</option>
+        <option>Indorent</option>
+    </select>
+
+    <textarea id="deskripsi" placeholder="Deskripsi Kendala" rows="3" required></textarea>
+       <label>Upload Foto (Opsional)</label>
+    <input type="file" id="foto" accept="image/*">
+   
+    <textarea id="penyelesaian" placeholder="Penyelesaian (diisi IT)" rows="3"></textarea>
+     <button type="submit">Buat Tiket</button>
+  
+</form>
+
+
+
+<hr>
+
+<h2>Daftar Tiket</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nama</th>
+            <th>Departemen</th>
+            <th>Deskripsi</th>
+            <th>Penyelesaian</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="ticketTable"></tbody>
+</table>
+
+</div>
 <script>
 
 const firebaseConfig = {
@@ -10,12 +241,13 @@ const firebaseConfig = {
   appId: "1:115967715698:web:87d9946912add507af55eb"
 };
 
+// INIT FIREBASE
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 let isAdmin = false;
 
-// LOAD DATA
+// ================= LOAD DATA =================
 function loadTickets(){
     const table = document.getElementById("ticketTable");
 
@@ -42,7 +274,7 @@ function loadTickets(){
     });
 }
 
-// CREATE DATA
+// ================= CREATE DATA =================
 function createTicket(e){
     e.preventDefault();
 
@@ -59,7 +291,7 @@ function createTicket(e){
     e.target.reset();
 }
 
-// ADMIN LOGIN
+// ================= ADMIN =================
 function adminLogin(){
     const pass = prompt("Masukkan Password Admin:");
     if(pass === "admin123"){
@@ -70,7 +302,7 @@ function adminLogin(){
     }
 }
 
-// CLOCK
+// ================= CLOCK =================
 function updateClock(){
     const now = new Date();
 
@@ -92,7 +324,7 @@ function updateClock(){
 setInterval(updateClock, 1000);
 updateClock();
 
-// AUTO DARK MODE
+// ================= DARK MODE =================
 function autoDarkMode(){
     const hour = new Date().getHours();
     if(hour >= 18 || hour < 6){
@@ -101,6 +333,13 @@ function autoDarkMode(){
 }
 autoDarkMode();
 
+// LOAD AWAL
 window.onload = loadTickets;
 
 </script>
+
+
+
+
+</body>
+</html>

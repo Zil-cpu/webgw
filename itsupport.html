@@ -2,6 +2,8 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IT Support Ticket</title>
 
@@ -228,6 +230,21 @@ th, td{
 
 </div>
 
+// CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyCsD94aN81UAuGK5R_Rkuko962eYaxoXnI",
+  authDomain: "it-supportticket.firebaseapp.com",
+  databaseURL: "https://it-supportticket-default-rtdb.firebaseio.com/",
+  projectId: "it-supportticket",
+  storageBucket: "it-supportticket.firebasestorage.app",
+  messagingSenderId: "115967715698",
+  appId: "1:115967715698:web:87d9946912add507af55eb"
+};
+
+// INIT
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+    
 <script>
 
 let isAdmin = false;

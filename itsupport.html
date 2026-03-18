@@ -322,7 +322,7 @@ function createTicket(e){
         status: penyelesaian ? "DONE" : "OPEN"
     };
 
-    addRow(ticketData);
+    addRow(ticketData, tickets.length);
 
     const tickets = JSON.parse(localStorage.getItem("tickets")) || [];
     tickets.push(ticketData);
@@ -370,7 +370,7 @@ loadTickets();
 }
 
 </script>
-</script>
+
 
 
 

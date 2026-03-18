@@ -229,6 +229,72 @@ th, td{
 </table>
 
 </div>
+
+<script>
+
+// 🔥 CONFIG FIREBASE (DI SINI)
+const firebaseConfig = {
+  apiKey: "AIzaSyCsD94aN81UAuGK5R_Rkuko962eYaxoXnI",
+  authDomain: "it-supportticket.firebaseapp.com",
+  databaseURL: "https://it-supportticket-default-rtdb.firebaseio.com/",
+  projectId: "it-supportticket",
+  storageBucket: "it-supportticket.firebasestorage.app",
+  messagingSenderId: "115967715698",
+  appId: "1:115967715698:web:87d9946912add507af55eb"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+
+// ================== FUNCTION ==================
+
+let isAdmin = false;
+
+function loadTickets(){
+    const table = document.getElementById("ticketTable");
+
+    db.ref("tickets").on("value", snapshot => {
+        table.innerHTML = "";
+
+        snapshot.forEach(child => {
+            const ticket = child.val();
+
+            const row = table.insertRow();
+            row.innerHTML = `
+                <td>-</td>
+                <td>${ticket.nama}</td>
+                <td>${ticket.departemen}</td>
+                <td>${ticket.deskripsi}</td>
+                <td>${ticket.penyelesaian || '-'}</td>
+                <td>${ticket.status}</td>
+            `;
+        });
+    });
+}
+
+function createTicket(e){
+    e.preventDefault();
+
+    const ticketData = {
+        nama: document.getElementById("nama").value,
+        departemen: document.getElementById("departemen").value,
+        deskripsi: document.getElementById("deskripsi").value,
+        penyelesaian: document.getElementById("penyelesaian").value,
+        status: "OPEN"
+    };
+
+    db.ref("tickets").push(ticketData);
+
+    e.target.reset();
+}
+
+window.onload = loadTickets;
+
+</script>
+
+</body>
+</html>
     
 <script>
 
@@ -372,60 +438,6 @@ loadTickets();
 }
 
 <script>
-
-// 🔥 CONFIG HARUS DI DALAM SCRIPT
-const firebaseConfig = {
-  apiKey: "AIzaSyCsD94aN81UAuGK5R_Rkuko962eYaxoXnI",
-  authDomain: "it-supportticket.firebaseapp.com",
-  databaseURL: "https://it-supportticket-default-rtdb.firebaseio.com/",
-  projectId: "it-supportticket",
-  storageBucket: "it-supportticket.firebasestorage.app",
-  messagingSenderId: "115967715698",
-  appId: "1:115967715698:web:87d9946912add507af55eb"
-};
-
-// INIT
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-
-// =======================
-// FUNCTION LU
-// =======================
-
-let isAdmin = false;
-
-function loadTickets(){
-    const table = document.getElementById("ticketTable");
-
-    db.ref("tickets").on("value", snapshot => {
-        table.innerHTML = "";
-
-        let no = 1;
-
-        snapshot.forEach(child => {
-            const ticket = child.val();
-
-            const row = table.insertRow();
-            row.innerHTML = `
-                <td>${no++}</td>
-                <td>${ticket.nama}</td>
-                <td>${ticket.departemen}</td>
-                <td>${ticket.deskripsi}</td>
-                <td>${ticket.penyelesaian || '-'}</td>
-                <td class="${ticket.status === 'OPEN' ? 'status-open' : 'status-done'}">
-                    ${ticket.status}
-                </td>
-            `;
-        });
-    });
-}
-
-window.onload = loadTickets;
-
-
-</script>
-
 
 
 

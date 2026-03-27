@@ -3,13 +3,18 @@
 <head>
 <meta charset="UTF-8">
 
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IT Support Ticket</title>
+</head>
 
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <style>
 body{
     font-family: 'Segoe UI', sans-serif;
@@ -94,6 +99,7 @@ td{
 
 <div style="text-align:right;">
 <button onclick="adminLogin()">Login Admin</button>
+<button onclick="loginGithub()">Login GitHub</button>
 </div>
 
 <div id="clock" style="text-align:right;font-weight:bold;"></div>
@@ -139,6 +145,18 @@ td{
 
 </div>
 
+function loginGithub(){
+    const provider = new firebase.auth.GithubAuthProvider();
+
+    firebase.auth().signInWithPopup(provider)
+    .then(result => {
+        alert("Login sukses");
+    })
+    .catch(error => {
+        console.error(error);
+        alert("Login gagal");
+    });
+}
 
 <script>
 
@@ -245,6 +263,20 @@ function adminLogin(){
 // INIT
 window.onload = loadTickets;
 
+function loginGithub(){
+    const provider = new firebase.auth.GithubAuthProvider();
+
+    firebase.auth().signInWithPopup(provider)
+    .then(result => {
+        const user = result.user;
+        alert("Login sukses: " + user.displayName);
+        console.log(user);
+    })
+    .catch(error => {
+        console.error(error);
+        alert("Login gagal");
+    });
+}
 </script>
 
 

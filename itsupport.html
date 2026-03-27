@@ -139,6 +139,7 @@ td{
 
 </div>
 
+
 <script>
 <script>
 
@@ -193,12 +194,17 @@ function loadTickets(){
 function createTicket(e){
     e.preventDefault();
 
+    const nama = document.getElementById("nama").value;
+    const departemen = document.getElementById("departemen").value;
+    const deskripsi = document.getElementById("deskripsi").value;
+    const penyelesaian = document.getElementById("penyelesaian").value;
+
     const data = {
-        nama: document.getElementById("nama").value,
-        departemen: document.getElementById("departemen").value,
-        deskripsi: document.getElementById("deskripsi").value,
-        penyelesaian: document.getElementById("penyelesaian").value,
-        status: document.getElementById("penyelesaian").value ? "DONE" : "OPEN",
+        nama,
+        departemen,
+        deskripsi,
+        penyelesaian,
+        status: penyelesaian ? "DONE" : "OPEN",
         createdAt: Date.now()
     };
 
@@ -206,7 +212,7 @@ function createTicket(e){
     e.target.reset();
 }
 
-// UPDATE STATUS
+// UPDATE
 function markDone(key){
     const solusi = prompt("Isi penyelesaian:");
     if(!solusi) return;
@@ -224,35 +230,23 @@ function deleteTicket(key){
     }
 }
 
-// ADMIN LOGIN
+// ADMIN
 function adminLogin(){
     const pass = prompt("Password:");
     if(pass==="admin123"){
         alert("Login sukses");
         isAdmin = true;
-        loadTickets(); // reload biar tombol muncul
+        loadTickets();
     }else{
         alert("Salah");
     }
 }
 
-// CLOCK
-function updateClock(){
-    const now = new Date();
-    document.getElementById("clock").innerHTML = now.toLocaleString('id-ID');
-}
-setInterval(updateClock,1000);
-
-// DARK MODE AUTO
-(function(){
-    const h=new Date().getHours();
-    if(h>=18||h<6) document.body.classList.add("dark-mode");
-})();
-
 // INIT
 window.onload = loadTickets;
 
 </script>
+
 
 
 </body>

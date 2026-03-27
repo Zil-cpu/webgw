@@ -141,10 +141,11 @@ function loadTickets(){
             <td>${t.penyelesaian || '-'}</td>
             <td class="${t.status==='OPEN'?'status-open':'status-done'}">${t.status}</td>
             <td>
-            ${isAdmin ? `
-            <button onclick="done('${key}')">✔</button>
-            <button onclick="hapus('${key}')">🗑</button>
-            ` : '-'}
+           ${isAdmin ? `
+<button onclick="done('${key}')">✔</button>
+<button onclick="editTicket('${key}')">✏️</button>
+<button onclick="hapus('${key}')">🗑</button>
+` : '-'}
             </td>
             `;
         });
@@ -199,6 +200,33 @@ function hapus(key){
     }
 }
 
+// EDIT
+function editTicket(key){
+    db.ref("tickets/"+key).once("value", snap=>{
+        const t = snap.val();
+
+        const nama = prompt("Edit Nama:", t.nama);
+        if(nama===null) return;
+
+        const departemen = prompt("Edit Departemen:", t.departemen);
+        if(departemen===null) return;
+
+        const deskripsi = prompt("Edit Deskripsi:", t.deskripsi);
+        if(deskripsi===null) return;
+
+        const penyelesaian = prompt("Edit Solusi:", t.penyelesaian || "");
+        if(penyelesaian===null) return;
+
+        db.ref("tickets/"+key).update({
+            nama: nama,
+            departemen: departemen,
+            deskripsi: deskripsi,
+            penyelesaian: penyelesaian,
+            status: penyelesaian ? "DONE" : "OPEN"
+        });
+    });
+}
+
 // ADMIN LOGIN
 function adminLogin(){
     const pass = prompt("Password:");
@@ -211,19 +239,6 @@ function adminLogin(){
     }
 }
 
-// LOGIN GITHUB
-function loginGithub(){
-    const provider = new firebase.auth.GithubAuthProvider();
-
-    firebase.auth().signInWithPopup(provider)
-    .then(res=>{
-        alert("Login GitHub sukses: "+res.user.displayName);
-    })
-    .catch(err=>{
-        console.error(err);
-        alert("Login gagal");
-    });
-}
 
 // INIT
 window.onload = function(){

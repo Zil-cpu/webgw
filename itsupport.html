@@ -63,6 +63,7 @@ th,td{
 <div class="container">
 
 <div style="text-align:right;">
+<div id="clock" style="text-align:right; font-weight:bold; margin-bottom:10px;"></div>
 <button onclick="adminLogin()">Login Admin</button>
 
 </div>
@@ -248,6 +249,14 @@ function adminLogin(){
     }
 }
 
+// jalan tiap detik
+setInterval(updateClock, 1000);
+    function updateClock(){
+    const now = new Date();
+    const waktu = now.toLocaleString("id-ID");
+    document.getElementById("clock").innerHTML = waktu;
+    }
+}
 
 // INIT
 window.onload = function(){

@@ -218,6 +218,11 @@ function loginGithub(){
 // INIT
 window.onload = loadTickets;
 
+db.ref("tickets").on("value", snap=>{
+    console.log("DATA:", snap.val()); // 
+});
+    
+console.log("JS jalan");
 </script>
 
 </body>

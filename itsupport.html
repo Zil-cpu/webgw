@@ -262,6 +262,7 @@ setInterval(updateClock, 1000);
 window.onload = function(){
     console.log("Web siap");
     loadTickets();
+    updateClock(); 
 };
 
 db.ref("tickets").on("value", snap=>{

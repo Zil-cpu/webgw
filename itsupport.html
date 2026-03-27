@@ -98,7 +98,7 @@ th,td{
 <table>
 <thead>
 <tr>
-<th>No</th>
+<th>No Antrian</th>
 <th>Nama</th>
 <th>Dept</th>
 <th>Deskripsi</th>
@@ -144,7 +144,7 @@ function loadTickets(){
             const row = table.insertRow();
 
             row.innerHTML = `
-            <td>${no++}</td>
+            <td>ANTRIAN-${String(no++).padStart(3,'0')}</td>
             <td>${t.nama}</td>
             <td>${t.departemen}</td>
             <td>${t.deskripsi}</td>

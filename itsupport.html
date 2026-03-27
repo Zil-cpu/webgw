@@ -119,9 +119,11 @@ let isAdmin = false;
 
 // LOAD DATA
 function loadTickets(){
+    console.log("LOAD TICKETS JALAN"); //
     const table = document.getElementById("ticketTable");
 
     db.ref("tickets").on("value", snap=>{
+        console.log("DATA MASUK:", snap.val()); //
         table.innerHTML="";
         let no=1;
 
@@ -216,7 +218,10 @@ function loginGithub(){
 }
 
 // INIT
-window.onload = loadTickets;
+window.onload = function(){
+    console.log("Web siap");
+    loadTickets();
+};
 
 db.ref("tickets").on("value", snap=>{
     console.log("DATA:", snap.val()); // 

@@ -154,15 +154,21 @@ function createTicket(e){
     e.preventDefault();
 
     const data = {
-        nama: nama.value,
-        departemen: departemen.value,
-        deskripsi: deskripsi.value,
-        penyelesaian: penyelesaian.value,
-        status: penyelesaian.value ? "DONE" : "OPEN"
+        nama: document.getElementById("nama").value,
+        departemen: document.getElementById("departemen").value,
+        deskripsi: document.getElementById("deskripsi").value,
+        penyelesaian: document.getElementById("penyelesaian").value,
+        status: document.getElementById("penyelesaian").value ? "DONE" : "OPEN"
     };
 
-    db.ref("tickets").push(data);
-    e.target.reset();
+    db.ref("tickets").push(data)
+    .then(()=>{
+        alert("✅ Data masuk Firebase");
+    })
+    .catch(err=>{
+        console.error(err);
+        alert("❌ Gagal simpan");
+    });
 }
 
 // UPDATE

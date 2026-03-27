@@ -2,93 +2,58 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IT Support Ticket</title>
-</head>
 
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
 <style>
 body{
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI';
     margin:0;
     background: linear-gradient(135deg,#1e3c72,#2a5298);
 }
 
 .container{
     max-width:1000px;
-    margin:40px auto;
+    margin:20px auto;
     background:white;
-    padding:30px;
+    padding:20px;
     border-radius:15px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.2);
-}
-
-h1{
-    text-align:center;
-    color:#2a5298;
-}
-
-form{
-    display:grid;
-    gap:15px;
-}
-
-input, select, textarea{
-    padding:10px;
-    border-radius:8px;
-    border:1px solid #ccc;
 }
 
 button{
-    padding:10px;
+    padding:8px;
     border:none;
-    border-radius:8px;
+    border-radius:6px;
     background:#2a5298;
     color:white;
     cursor:pointer;
 }
 
+input, select, textarea{
+    width:100%;
+    padding:10px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
 table{
     width:100%;
-    border-collapse:collapse;
     margin-top:20px;
+    border-collapse:collapse;
 }
 
-th{
-    background:#2a5298;
-    color:white;
-    padding:10px;
-}
-
-td{
-    padding:10px;
+th,td{
+    padding:8px;
     border-bottom:1px solid #ddd;
 }
 
-.status-open{color:red;font-weight:bold;}
-.status-done{color:green;font-weight:bold;}
-
-.dark-mode{
-    background:#121212 !important;
-    color:white !important;
-}
-
-.dark-mode .container{
-    background:#1e1e1e;
-}
-
-@media (max-width:768px){
-    .container{margin:10px;padding:20px;}
-    table{display:block;overflow-x:auto;}
-}
+.status-open{color:red;}
+.status-done{color:green;}
 </style>
 
 </head>
@@ -102,31 +67,23 @@ td{
 <button onclick="loginGithub()">Login GitHub</button>
 </div>
 
-<div id="clock" style="text-align:right;font-weight:bold;"></div>
-
-<h1>IT Support Ticket System</h1>
+<h2>IT Support Ticket</h2>
 
 <form onsubmit="createTicket(event)">
-    <input type="text" id="nama" placeholder="Nama Pelapor" required>
+<input id="nama" placeholder="Nama Pelapor" required>
+<select id="departemen" required>
+<option value="">Pilih Dept</option>
+<option>IT</option>
+<option>Medsos</option>
+<option>Redaksi</option>
+</select>
+<textarea id="deskripsi" placeholder="Masalah" required></textarea>
+<textarea id="penyelesaian" placeholder="Solusi"></textarea>
 
-    <select id="departemen" required>
-        <option value="">-- Pilih Departemen --</option>
-        <option>IT</option>
-        <option>Redaksi</option>
-        <option>Listener</option>
-        <option>Medsos</option>
-    </select>
-
-    <textarea id="deskripsi" placeholder="Deskripsi Kendala" required></textarea>
-
-    <textarea id="penyelesaian" placeholder="Penyelesaian (IT)"></textarea>
-
-    <button type="submit">Buat Tiket</button>
+<button type="submit">Buat Tiket</button>
 </form>
 
-<hr>
-
-<h2>Daftar Tiket</h2>
+<h3>Daftar Tiket</h3>
 
 <table>
 <thead>
@@ -135,7 +92,7 @@ td{
 <th>Nama</th>
 <th>Dept</th>
 <th>Deskripsi</th>
-<th>Penyelesaian</th>
+<th>Solusi</th>
 <th>Status</th>
 <th>Aksi</th>
 </tr>
@@ -145,27 +102,13 @@ td{
 
 </div>
 
-function loginGithub(){
-    const provider = new firebase.auth.GithubAuthProvider();
-
-    firebase.auth().signInWithPopup(provider)
-    .then(result => {
-        alert("Login sukses");
-    })
-    .catch(error => {
-        console.error(error);
-        alert("Login gagal");
-    });
-}
-
 <script>
 
-
-// FIREBASE CONFIG
+// CONFIG (GANTI API KEY LU)
 const firebaseConfig = {
   apiKey: "ISI_API_KEY_LO",
   authDomain: "it-supportticket.firebaseapp.com",
-  databaseURL: "https://it-supportticket-default-rtdb.firebaseio.com/",
+  databaseURL: "https://it-supportticket-default-rtdb.asia-southeast1.firebasedatabase.app/",
   projectId: "it-supportticket"
 };
 
@@ -178,31 +121,29 @@ let isAdmin = false;
 function loadTickets(){
     const table = document.getElementById("ticketTable");
 
-    db.ref("tickets").on("value", snapshot => {
-        table.innerHTML = "";
-        let no = 1;
+    db.ref("tickets").on("value", snap=>{
+        table.innerHTML="";
+        let no=1;
 
-        snapshot.forEach(child => {
+        snap.forEach(child=>{
             const t = child.val();
             const key = child.key;
 
             const row = table.insertRow();
 
             row.innerHTML = `
-                <td>${no++}</td>
-                <td>${t.nama}</td>
-                <td>${t.departemen}</td>
-                <td>${t.deskripsi}</td>
-                <td>${t.penyelesaian || '-'}</td>
-                <td class="${t.status==='OPEN'?'status-open':'status-done'}">
-                    ${t.status}
-                </td>
-                <td>
-                    ${isAdmin ? `
-                        <button onclick="markDone('${key}')">✔</button>
-                        <button onclick="deleteTicket('${key}')">🗑</button>
-                    ` : '-'}
-                </td>
+            <td>${no++}</td>
+            <td>${t.nama}</td>
+            <td>${t.departemen}</td>
+            <td>${t.deskripsi}</td>
+            <td>${t.penyelesaian || '-'}</td>
+            <td class="${t.status==='OPEN'?'status-open':'status-done'}">${t.status}</td>
+            <td>
+            ${isAdmin ? `
+            <button onclick="done('${key}')">✔</button>
+            <button onclick="hapus('${key}')">🗑</button>
+            ` : '-'}
+            </td>
             `;
         });
     });
@@ -212,18 +153,12 @@ function loadTickets(){
 function createTicket(e){
     e.preventDefault();
 
-    const nama = document.getElementById("nama").value;
-    const departemen = document.getElementById("departemen").value;
-    const deskripsi = document.getElementById("deskripsi").value;
-    const penyelesaian = document.getElementById("penyelesaian").value;
-
     const data = {
-        nama,
-        departemen,
-        deskripsi,
-        penyelesaian,
-        status: penyelesaian ? "DONE" : "OPEN",
-        createdAt: Date.now()
+        nama: nama.value,
+        departemen: departemen.value,
+        deskripsi: deskripsi.value,
+        penyelesaian: penyelesaian.value,
+        status: penyelesaian.value ? "DONE" : "OPEN"
     };
 
     db.ref("tickets").push(data);
@@ -231,55 +166,53 @@ function createTicket(e){
 }
 
 // UPDATE
-function markDone(key){
-    const solusi = prompt("Isi penyelesaian:");
+function done(key){
+    const solusi = prompt("Isi solusi:");
     if(!solusi) return;
 
-    db.ref("tickets/" + key).update({
+    db.ref("tickets/"+key).update({
         penyelesaian: solusi,
         status: "DONE"
     });
 }
 
 // DELETE
-function deleteTicket(key){
+function hapus(key){
     if(confirm("Hapus tiket?")){
-        db.ref("tickets/" + key).remove();
+        db.ref("tickets/"+key).remove();
     }
 }
 
-// ADMIN
+// ADMIN LOGIN
 function adminLogin(){
     const pass = prompt("Password:");
     if(pass==="admin123"){
-        alert("Login sukses");
-        isAdmin = true;
+        isAdmin=true;
+        alert("Admin login");
         loadTickets();
     }else{
         alert("Salah");
     }
 }
 
-// INIT
-window.onload = loadTickets;
-
+// LOGIN GITHUB
 function loginGithub(){
     const provider = new firebase.auth.GithubAuthProvider();
 
     firebase.auth().signInWithPopup(provider)
-    .then(result => {
-        const user = result.user;
-        alert("Login sukses: " + user.displayName);
-        console.log(user);
+    .then(res=>{
+        alert("Login GitHub sukses: "+res.user.displayName);
     })
-    .catch(error => {
-        console.error(error);
+    .catch(err=>{
+        console.error(err);
         alert("Login gagal");
     });
 }
+
+// INIT
+window.onload = loadTickets;
+
 </script>
-
-
 
 </body>
 </html>

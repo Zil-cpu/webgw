@@ -131,6 +131,7 @@ td{
 <th>Deskripsi</th>
 <th>Penyelesaian</th>
 <th>Status</th>
+<th>Aksi</th>
 </tr>
 </thead>
 <tbody id="ticketTable"></tbody>
@@ -139,10 +140,11 @@ td{
 </div>
 
 <script>
+<script>
 
 // FIREBASE CONFIG
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
+  apiKey: "ISI_API_KEY_LO",
   authDomain: "it-supportticket.firebaseapp.com",
   databaseURL: "https://it-supportticket-default-rtdb.firebaseio.com/",
   projectId: "it-supportticket"
@@ -163,8 +165,10 @@ function loadTickets(){
 
         snapshot.forEach(child => {
             const t = child.val();
+            const key = child.key;
 
             const row = table.insertRow();
+
             row.innerHTML = `
                 <td>${no++}</td>
                 <td>${t.nama}</td>
@@ -173,6 +177,12 @@ function loadTickets(){
                 <td>${t.penyelesaian || '-'}</td>
                 <td class="${t.status==='OPEN'?'status-open':'status-done'}">
                     ${t.status}
+                </td>
+                <td>
+                    ${isAdmin ? `
+                        <button onclick="markDone('${key}')">✔</button>
+                        <button onclick="deleteTicket('${key}')">🗑</button>
+                    ` : '-'}
                 </td>
             `;
         });
@@ -184,23 +194,43 @@ function createTicket(e){
     e.preventDefault();
 
     const data = {
-        nama: nama.value,
-        departemen: departemen.value,
-        deskripsi: deskripsi.value,
-        penyelesaian: penyelesaian.value,
-        status: penyelesaian.value ? "DONE" : "OPEN"
+        nama: document.getElementById("nama").value,
+        departemen: document.getElementById("departemen").value,
+        deskripsi: document.getElementById("deskripsi").value,
+        penyelesaian: document.getElementById("penyelesaian").value,
+        status: document.getElementById("penyelesaian").value ? "DONE" : "OPEN",
+        createdAt: Date.now()
     };
 
     db.ref("tickets").push(data);
     e.target.reset();
 }
 
-// ADMIN
+// UPDATE STATUS
+function markDone(key){
+    const solusi = prompt("Isi penyelesaian:");
+    if(!solusi) return;
+
+    db.ref("tickets/" + key).update({
+        penyelesaian: solusi,
+        status: "DONE"
+    });
+}
+
+// DELETE
+function deleteTicket(key){
+    if(confirm("Hapus tiket?")){
+        db.ref("tickets/" + key).remove();
+    }
+}
+
+// ADMIN LOGIN
 function adminLogin(){
     const pass = prompt("Password:");
     if(pass==="admin123"){
         alert("Login sukses");
         isAdmin = true;
+        loadTickets(); // reload biar tombol muncul
     }else{
         alert("Salah");
     }
@@ -209,7 +239,7 @@ function adminLogin(){
 // CLOCK
 function updateClock(){
     const now = new Date();
-    clock.innerHTML = now.toLocaleString('id-ID');
+    document.getElementById("clock").innerHTML = now.toLocaleString('id-ID');
 }
 setInterval(updateClock,1000);
 
@@ -223,6 +253,7 @@ setInterval(updateClock,1000);
 window.onload = loadTickets;
 
 </script>
+
 
 </body>
 </html>

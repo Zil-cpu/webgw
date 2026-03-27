@@ -250,22 +250,21 @@ function adminLogin(){
 }
 
 // jalan tiap detik
-setInterval(updateClock, 1000);
-    function updateClock(){
+function updateClock(){
     const now = new Date();
     const waktu = now.toLocaleString("id-ID");
     document.getElementById("clock").innerHTML = waktu;
- });
+}
 
 setInterval(updateClock, 1000);
-
-    
+ 
 // INIT
 window.onload = function(){
     console.log("Web siap");
     loadTickets();
     updateClock(); 
-   });
+};
+  
 
 db.ref("tickets").on("value", snap=>{
     console.log("DATA:", snap.val());  

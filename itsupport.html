@@ -89,6 +89,7 @@ th,td{
 
 </select>
 <textarea id="deskripsi" placeholder="Masalah" required></textarea>
+<input type="file" id="foto" accept="image/*">
 <textarea id="penyelesaian" placeholder="Solusi"></textarea>
 
 <button type="submit">Buat Tiket</button>
@@ -124,6 +125,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+const storage = firebase.storage();
 const db = firebase.database();
 
 let isAdmin = false;
@@ -149,6 +151,7 @@ function loadTickets(){
             <td>${t.nama}</td>
             <td>${t.departemen}</td>
             <td>${t.deskripsi}</td>
+            <td>${t.foto ? `<img src="${t.foto}" width="80" onclick="window.open('${t.foto}')">` : ''}</td>
             <td>${t.penyelesaian || '-'}</td>
             <td class="${t.status==='OPEN'?'status-open':'status-done'}">${t.status}</td>
             <td>
@@ -171,11 +174,13 @@ function createTicket(e){
     const departemen = document.getElementById("departemen").value;
     const deskripsi = document.getElementById("deskripsi").value;
     const penyelesaian = document.getElementById("penyelesaian").value;
+    const file = document.getElementById("foto").files[0];
 
     const data = {
         nama,
         departemen,
         deskripsi,
+        foto: fotoURL,
         penyelesaian,
         status: penyelesaian ? "DONE" : "OPEN",
         createdAt: Date.now()

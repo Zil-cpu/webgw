@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IT Support Ticket</title>
+<link rel="icon" href="logo.png">
 
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -139,7 +140,8 @@ function loadTickets(){
     const table = document.getElementById("ticketTable");
 
     db.ref("tickets").on("value", snap=>{
-        console.log("DATA MASUK:", snap.val()); //
+        console.log("DATA MASUK:", snap.val()); 
+        });
         table.innerHTML="";
         let no=1;
 
@@ -283,7 +285,7 @@ window.onload = function(){
     updateClock(); 
 };
   
-
+// realtime log
 db.ref("tickets").on("value", snap=>{
     console.log("DATA:", snap.val());  
 });

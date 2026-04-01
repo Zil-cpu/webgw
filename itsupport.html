@@ -136,12 +136,12 @@ let isAdmin = false;
 
 // LOAD DATA
 function loadTickets(){
-    console.log("LOAD TICKETS JALAN"); //
+    console.log("LOAD TICKETS JALAN");
     const table = document.getElementById("ticketTable");
 
     db.ref("tickets").on("value", snap=>{
-        console.log("DATA MASUK:", snap.val()); 
-        });
+        console.log("DATA MASUK:", snap.val());
+
         table.innerHTML="";
         let no=1;
 
@@ -160,11 +160,11 @@ function loadTickets(){
             <td>${t.penyelesaian || '-'}</td>
             <td class="${t.status==='OPEN'?'status-open':'status-done'}">${t.status}</td>
             <td>
-           ${isAdmin ? `
-<button onclick="done('${key}')">✔</button>
-<button onclick="editTicket('${key}')">✏️</button>
-<button onclick="hapus('${key}')">🗑</button>
-` : '-'}
+            ${isAdmin ? `
+            <button onclick="done('${key}')">✔</button>
+            <button onclick="editTicket('${key}')">✏️</button>
+            <button onclick="hapus('${key}')">🗑</button>
+            ` : '-'}
             </td>
             `;
         });

@@ -302,9 +302,11 @@ function editTicket(key){
 // ADMIN LOGIN
 function adminLogin(){
     const pass = prompt("Password:");
-    if(pass==="admin123"){
+    if(pass==="Broadacst2026serv"){
         isAdmin=true;
+        currentUser = "ADMIN";
         alert("Admin login");
+        document.getElementById("infoUser").innerText = "Login sebagai: ADMIN";
         loadTickets();//
     }else{
         alert("Salah");

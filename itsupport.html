@@ -156,6 +156,7 @@ function loadTickets(){
             <td>${t.nama}</td>
             <td>${t.departemen}</td>
             <td>${t.deskripsi}</td>
+            <td>${t.waktu || '-'}</td>
             <td>${t.foto ? `<img src="${t.foto}" width="80" onclick="window.open('${t.foto}')">` : ''}</td>
             <td>${t.penyelesaian || '-'}</td>
             <td class="${t.status==='OPEN'?'status-open':'status-done'}">${t.status}</td>
@@ -192,7 +193,8 @@ function createTicket(e){
                 foto: reader.result,
                 penyelesaian,
                 status: penyelesaian ? "DONE" : "OPEN",
-                createdAt: Date.now()
+                createdAt: Date.now(),
+                waktu: now.toLocaleString("id-ID")
             };
 
             simpanData(data);

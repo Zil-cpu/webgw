@@ -107,6 +107,7 @@ th,td{
 <th>Nama</th>
 <th>Dept</th>
 <th>Deskripsi</th>
+<th>Waktu</th>
 <th>Foto</th>
 <th>Solusi</th>
 <th>Status</th>
@@ -186,6 +187,8 @@ function createTicket(e){
         const reader = new FileReader();
 
         reader.onload = function(){
+            const now = new Date();
+            
             const data = {
                 nama,
                 departemen,
@@ -194,14 +197,18 @@ function createTicket(e){
                 penyelesaian,
                 status: penyelesaian ? "DONE" : "OPEN",
                 createdAt: Date.now(),
-                waktu: now.toLocaleString("id-ID")
-            };
+                waktu: now.toLocaleString("id-ID", {
+                           dateStyle: "medium",
+                            timeStyle: "short"
+        })
 
             simpanData(data);
         };
 
         reader.readAsDataURL(file); // WAJIB ADA
     }else{
+        const now = new Date();
+        
         const data = {
             nama,
             departemen,

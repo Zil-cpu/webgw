@@ -75,9 +75,12 @@ th,td{
 
 
 <h2>IT Support Ticket</h2>
-    
+
+<div id="userSection">
 <input id="userLogin" placeholder="Masukkan Nama / User">
 <button onclick="setUser()">Masuk</button>
+</div>
+<div id="formSection">
 <form onsubmit="createTicket(event)">
 <input id="nama" placeholder="Nama Pelapor" required>
 <select id="departemen" required>
@@ -102,6 +105,7 @@ th,td{
 
 <button type="submit">Buat Tiket</button>
 </form>
+</div>
 
 <h3>Daftar Tiket</h3>
 

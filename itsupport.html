@@ -185,20 +185,36 @@ function createTicket(e){
         const reader = new FileReader();
 
         reader.onload = function(){
-    const data = {
-        nama,
-        departemen,
-        deskripsi,
-        foto: reader.result, // ✅ base64
-        penyelesaian,
-        status: penyelesaian ? "DONE" : "OPEN",
-        createdAt: Date.now()
-    };
+            const data = {
+                nama,
+                departemen,
+                deskripsi,
+                foto: reader.result,
+                penyelesaian,
+                status: penyelesaian ? "DONE" : "OPEN",
+                createdAt: Date.now()
+            };
+
             simpanData(data);
         };
-        
-    console.log("Kirim data:", data); // DEBUG
-        
+
+        reader.readAsDataURL(file); // WAJIB ADA
+    }else{
+        const data = {
+            nama,
+            departemen,
+            deskripsi,
+            foto: "",
+            penyelesaian,
+            status: penyelesaian ? "DONE" : "OPEN",
+            createdAt: Date.now()
+        };
+
+        simpanData(data);
+    }
+}
+
+// SIMPAN DATA
 function simpanData(data){
     db.ref("tickets").push(data)
     .then(()=>{

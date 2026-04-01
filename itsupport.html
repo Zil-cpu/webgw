@@ -68,8 +68,10 @@ th,td{
 <div style="text-align:right;">
 <div id="clock" style="text-align:right; font-weight:bold; margin-bottom:10px;"></div>
 <button onclick="adminLogin()">Login Admin</button>
-
 </div>
+<div id="infoUser" style="font-weight:bold; margin-bottom:10px;"></div>
+    
+
 
 <h2>IT Support Ticket</h2>
     
@@ -152,6 +154,7 @@ function loadTickets(){
         snap.forEach(child=>{
             const t = child.val();
             const key = child.key;
+            if(!isAdmin && t.user !== currentUser) return;
 
             const row = table.insertRow();
             if(!isAdmin && t.user !== currentUser) return;
@@ -318,8 +321,9 @@ function setUser(){
     }
 
     currentUser = user;
+    document.getElementById("infoUser").innerText = "Login sebagai: " + user;
+    
     alert("Login sebagai: " + user);
-
     loadTickets();
 }
 

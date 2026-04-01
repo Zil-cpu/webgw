@@ -182,6 +182,7 @@ function createTicket(e){
     const deskripsi = document.getElementById("deskripsi").value;
     const penyelesaian = document.getElementById("penyelesaian").value;
     const file = document.getElementById("foto").files[0];
+    const now = new Date();
 
     if(file){
         const reader = new FileReader();
@@ -197,13 +198,12 @@ function createTicket(e){
                 penyelesaian,
                 status: penyelesaian ? "DONE" : "OPEN",
                 createdAt: Date.now(),
-                waktu: now.toLocaleString("id-ID", {
-                           dateStyle: "medium",
-                            timeStyle: "short"
-        })
+                waktu: now.toLocaleString("id-ID")
+       };
 
+            console.log("Kirim data:", data);
             simpanData(data);
-        };
+        }
 
         reader.readAsDataURL(file); // WAJIB ADA
     }else{
@@ -216,12 +216,15 @@ function createTicket(e){
             foto: "",
             penyelesaian,
             status: penyelesaian ? "DONE" : "OPEN",
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            waktu: now.toLocaleString("id-ID")
         };
 
+        console.log("Kirim data:", data);
         simpanData(data);
     }
 }
+
 
 // SIMPAN DATA
 function simpanData(data){

@@ -214,8 +214,6 @@ function loadTickets(){
             if(!isAdmin && t.user !== currentUser) return;
 
             const row = table.insertRow();
-            const card = document.createElement("div");
-            card.className = "card";
            
             row.innerHTML = `
             <td>ANTRIAN-${String(no++).padStart(3,'0')}</td>

@@ -58,7 +58,51 @@ th,td{
 .status-open{color:red;}
 .status-done{color:green;}
 </style>
+    
+/* MOBILE UI */
+@media (max-width:768px){
 
+    h2,h3{
+        text-align:center;
+    }
+
+    input, select, textarea, button{
+        font-size:16px;
+    }
+
+    button{
+        padding:12px;
+        margin-top:5px;
+    }
+
+    table{
+        display:none; /* sembunyikan tabel */
+    }
+
+    .card{
+        background:white;
+        border-radius:12px;
+        padding:15px;
+        margin-bottom:10px;
+        box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .card p{
+        margin:5px 0;
+        font-size:14px;
+    }
+
+    .card img{
+        width:100%;
+        border-radius:10px;
+        margin-top:5px;
+    }
+
+    .aksi button{
+        margin-right:5px;
+        margin-top:5px;
+    }
+}
 </head>
 
 <body>
@@ -159,11 +203,15 @@ function loadTickets(){
         snap.forEach(child=>{
             const t = child.val();
             const key = child.key;
+            const mobile = document.getElementById("mobileView");
+             mobile.innerHTML = "";
 
             // filter user
             if(!isAdmin && t.user !== currentUser) return;
 
             const row = table.insertRow();
+            const card = document.createElement("div");
+            card.className = "card";
            
             row.innerHTML = `
             <td>ANTRIAN-${String(no++).padStart(3,'0')}</td>
@@ -185,7 +233,8 @@ function loadTickets(){
         });
     });
 }
-
+mobile.appendChild(card);
+    
 // CREATE
 function createTicket(e){
     e.preventDefault();

@@ -171,6 +171,7 @@ th,td{
 </thead>
 <tbody id="ticketTable"></tbody>
 </table>
+<div id="mobileView"></div>
 
 </div>
 
@@ -229,12 +230,8 @@ function loadTickets(){
             <button onclick="done('${key}')">✔</button>
             <button onclick="editTicket('${key}')">✏️</button>
             <button onclick="hapus('${key}')">🗑</button>
-            ` : '-'}
-            </td>
+            ` : '-'}</td>
             `;
-        });
-    });
-}
     
 // ===== MOBILE CARD =====
             const card = document.createElement("div");

@@ -159,11 +159,12 @@ function loadTickets(){
         snap.forEach(child=>{
             const t = child.val();
             const key = child.key;
+
+            // filter user
             if(!isAdmin && t.user !== currentUser) return;
 
             const row = table.insertRow();
-            if(!isAdmin && t.user !== currentUser) return;
-
+           
             row.innerHTML = `
             <td>ANTRIAN-${String(no++).padStart(3,'0')}</td>
             <td>${t.nama}</td>
@@ -229,6 +230,7 @@ function createTicket(e){
         const now = new Date();
         
         const data = {
+            user: currentUser,
             nama,
             departemen,
             deskripsi,

@@ -28,37 +28,6 @@ body{
     border-radius:15px;
 }
 
-button{
-    padding:8px;
-    border:none;
-    border-radius:6px;
-    background:#2a5298;
-    color:white;
-    cursor:pointer;
-}
-
-input, select, textarea{
-    width:100%;
-    padding:10px;
-    border-radius:6px;
-    border:1px solid #ccc;
-}
-
-table{
-    width:100%;
-    margin-top:20px;
-    border-collapse:collapse;
-}
-
-th,td{
-    padding:8px;
-    border-bottom:1px solid #ddd;
-}
-
-.status-open{color:red;}
-.status-done{color:green;}
-</style>
-    
 /* MOBILE UI */
 @media (max-width:768px){
 
@@ -103,6 +72,39 @@ th,td{
         margin-top:5px;
     }
 }
+
+button{
+    padding:8px;
+    border:none;
+    border-radius:6px;
+    background:#2a5298;
+    color:white;
+    cursor:pointer;
+}
+
+input, select, textarea{
+    width:100%;
+    padding:10px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+table{
+    width:100%;
+    margin-top:20px;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:8px;
+    border-bottom:1px solid #ddd;
+}
+
+.status-open{color:red;}
+.status-done{color:green;}
+</style>
+    
+
 </head>
 
 <body>
@@ -193,18 +195,19 @@ let currentUser = "";
 function loadTickets(){
     console.log("LOAD TICKETS JALAN");
     const table = document.getElementById("ticketTable");
+    const mobile = document.getElementById("mobileView");
 
     db.ref("tickets").on("value", snap=>{
         console.log("DATA MASUK:", snap.val());
 
         table.innerHTML="";
+        mobile.innerHTML="";
         let no=1;
 
         snap.forEach(child=>{
             const t = child.val();
             const key = child.key;
-            const mobile = document.getElementById("mobileView");
-             mobile.innerHTML = "";
+            
 
             // filter user
             if(!isAdmin && t.user !== currentUser) return;
@@ -222,8 +225,7 @@ function loadTickets(){
             <td>${t.foto ? `<img src="${t.foto}" width="80" onclick="window.open('${t.foto}')">` : ''}</td>
             <td>${t.penyelesaian || '-'}</td>
             <td class="${t.status==='OPEN'?'status-open':'status-done'}">${t.status}</td>
-            <td>
-            ${isAdmin ? `
+            <td>${isAdmin ? `
             <button onclick="done('${key}')">✔</button>
             <button onclick="editTicket('${key}')">✏️</button>
             <button onclick="hapus('${key}')">🗑</button>
@@ -233,7 +235,25 @@ function loadTickets(){
         });
     });
 }
-mobile.appendChild(card);
+    
+// ===== MOBILE CARD =====
+            const card = document.createElement("div");
+            card.className = "card";
+
+            card.innerHTML = `
+            <p><b>No:</b> ANTRIAN-${String(no).padStart(3,'0')}</p>
+            <p><b>Nama:</b> ${t.nama}</p>
+            <p><b>Dept:</b> ${t.departemen}</p>
+            <p><b>Masalah:</b> ${t.deskripsi}</p>
+            <p><b>Waktu:</b> ${t.waktu || '-'}</p>
+            ${t.foto ? `<img src="${t.foto}">` : ''}
+            <p><b>Status:</b> ${t.status}</p>
+            `;
+
+            mobile.appendChild(card);
+        });
+    });
+}
     
 // CREATE
 function createTicket(e){
